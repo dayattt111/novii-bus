@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import Navbar from '@/components/Navbar'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
 
 export default async function PesananPage() {
   const user = await getSession()
