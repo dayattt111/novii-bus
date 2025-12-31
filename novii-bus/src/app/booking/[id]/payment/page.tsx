@@ -3,8 +3,9 @@ import Image from 'next/image'
 import { getBooking, updatePaymentStatus } from '@/app/actions/booking'
 import { notFound } from 'next/navigation'
 
-export default async function PaymentPage({ params }: { params: { id: string } }) {
-  const booking = await getBooking(params.id)
+export default async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const booking = await getBooking(id)
 
   if (!booking) {
     notFound()
@@ -12,7 +13,7 @@ export default async function PaymentPage({ params }: { params: { id: string } }
 
   async function handlePayment() {
     'use server'
-    await updatePaymentStatus(params.id)
+    await updatePaymentStatus(id)
   }
 
   return (

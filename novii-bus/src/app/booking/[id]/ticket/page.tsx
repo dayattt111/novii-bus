@@ -3,8 +3,9 @@ import Image from 'next/image'
 import { getBooking } from '@/app/actions/booking'
 import { notFound } from 'next/navigation'
 
-export default async function TicketPage({ params }: { params: { id: string } }) {
-  const booking = await getBooking(params.id)
+export default async function TicketPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const booking = await getBooking(id)
 
   if (!booking) {
     notFound()
