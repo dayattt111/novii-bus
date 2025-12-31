@@ -1,14 +1,89 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  nama      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookings  Booking[]
+}
+
+model Route {
+  id          String   @id @default(cuid())
+  kotaAsal    String
+  kotaTujuan  String
+  harga       Int
+  buses       Bus[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([kotaAsal, kotaTujuan])
+}
+
+model Bus {
+  id        String   @id @default(cuid())
+  routeId   String
+  route     Route    @relation(fields: [routeId], references: [id])
+  tipe      String   // Ekonomi, Eksekutif, Sleeper
+  nama      String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  seats     Seat[]
+  bookings  Booking[]
+}
+
+model Seat {
+  id        String   @id @default(cuid())
+  busId     String
+  bus       Bus      @relation(fields: [busId], references: [id])
+  nomorKursi String  // A1, A2, B1, etc
+  harga     Int
+  isBooked  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookings  Booking[]
+
+  @@unique([busId, nomorKursi])
+}
+
+model Booking {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  busId             String
+  bus               Bus      @relation(fields: [busId], references: [id])
+  seatId            String
+  seat              Seat     @relation(fields: [seatId], references: [id])
+  
+  namaPenumpang     String
+  noHp              String
+  naikDi            String?
+  turunDi           String?
+  
+  tanggalKeberangkatan DateTime
+  waktuKeberangkatan   String
+  
+  totalHarga        Int
+  biayaLayanan      Int
+  
+  metodePembayaran  String   // Kartu Kredit/Debit, Transfer Bank, Dompet Digital
+  statusPembayaran  String   @default("pending") // pending, paid
+  
+  qrCode            String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
