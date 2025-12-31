@@ -10,7 +10,7 @@ export default function HomePage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Selamat Datang di TemanBus
+            Selamat Datang di Ovii-Bus
           </h2>
           <p className="text-lg md:text-xl text-gray-600 mb-12">
             Pesan tiket bus Anda dengan mudah dan cepat di seluruh wilayah Sulawesi.

@@ -7,13 +7,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition">
             <div className="w-8 h-8 bg-blue-600 rounded"></div>
-            <h1 className="text-xl font-bold text-gray-900">TemanBus</h1>
+            <h1 className="text-xl font-bold text-gray-900">Ovii-Bus</h1>
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
+            <Link href="/" className="text-gray-700 hover:text-blue-600 transition">
+              Beranda
+            </Link>
             <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 transition">
               Pesan Tiket
             </Link>
-            <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 transition">
+            <Link href="/pesanan" className="text-gray-700 hover:text-blue-600 transition">
               Pesanan Saya
             </Link>
             <Link href="/login" className="text-gray-700 hover:text-blue-600 transition">
