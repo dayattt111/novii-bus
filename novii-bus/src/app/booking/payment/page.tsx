@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createBooking } from '@/app/actions/booking'
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 
 export default function PaymentPage() {
   const searchParams = useSearchParams()
@@ -36,7 +36,7 @@ export default function PaymentPage() {
     return await createBooking(formData)
   }
 
-  const [state, formAction] = useFormState(handlePayment, null)
+  const [state, formAction] = useActionState(handlePayment, null)
 
   return (
     <div className="min-h-screen bg-gray-50">

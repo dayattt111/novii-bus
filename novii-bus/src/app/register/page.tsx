@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 import { registerUser } from '@/app/actions/auth'
 
 export default function RegisterPage() {
-  const [state, formAction] = useFormState(registerUser, null)
+  const [state, formAction] = useActionState(registerUser, null)
 
   return (
     <div className="min-h-screen bg-gray-50">

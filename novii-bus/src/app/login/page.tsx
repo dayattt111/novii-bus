@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 import { loginUser } from '@/app/actions/auth'
 
 export default function LoginPage() {
-  const [state, formAction] = useFormState(loginUser, null)
+  const [state, formAction] = useActionState(loginUser, null)
 
   return (
     <div className="min-h-screen bg-gray-50">
