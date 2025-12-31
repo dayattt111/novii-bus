@@ -21,6 +21,11 @@ export default function PaymentPage() {
   const totalHarga = harga + biayaLayanan
 
   async function handlePayment(prevState: any, formData: FormData) {
+    // Validasi tanggal
+    if (!date) {
+      return { error: 'Tanggal keberangkatan tidak valid' }
+    }
+
     // Tambahkan data yang sudah ada
     formData.append('busId', busId)
     formData.append('seatId', seatId)
@@ -101,7 +106,7 @@ export default function PaymentPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tanggal Keberangkatan:</span>
-                  <span className="font-medium">{new Date(date).toLocaleDateString('id-ID')}</span>
+                  <span className="font-medium">{date ? new Date(date).toLocaleDateString('id-ID') : '-'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Waktu Keberangkatan:</span>

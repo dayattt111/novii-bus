@@ -18,11 +18,21 @@ export async function createBooking(formData: FormData) {
   const noHp = formData.get('noHp') as string
   const naikDi = formData.get('naikDi') as string
   const turunDi = formData.get('turunDi') as string
-  const tanggalKeberangkatan = formData.get('tanggalKeberangkatan') as string
+  const tanggalKeberangkatanStr = formData.get('tanggalKeberangkatan') as string
   const waktuKeberangkatan = formData.get('waktuKeberangkatan') as string
   const totalHarga = parseInt(formData.get('totalHarga') as string)
   const biayaLayanan = parseInt(formData.get('biayaLayanan') as string)
   const metodePembayaran = formData.get('metodePembayaran') as string
+
+  // Validasi tanggal
+  if (!tanggalKeberangkatanStr) {
+    return { error: 'Tanggal keberangkatan harus diisi' }
+  }
+
+  const tanggalKeberangkatan = new Date(tanggalKeberangkatanStr)
+  if (isNaN(tanggalKeberangkatan.getTime())) {
+    return { error: 'Format tanggal tidak valid' }
+  }
 
   // Cek seat masih available
   const seat = await prisma.seat.findUnique({
@@ -37,7 +47,7 @@ export async function createBooking(formData: FormData) {
   const bookingData = {
     namaPenumpang,
     noHp,
-    tanggal: tanggalKeberangkatan,
+    tanggal: tanggalKeberangkatanStr,
     waktu: waktuKeberangkatan,
   }
   const qrCode = await QRCode.toDataURL(JSON.stringify(bookingData))
@@ -52,7 +62,7 @@ export async function createBooking(formData: FormData) {
       noHp,
       naikDi,
       turunDi,
-      tanggalKeberangkatan: new Date(tanggalKeberangkatan),
+      tanggalKeberangkatan,
       waktuKeberangkatan,
       totalHarga,
       biayaLayanan,
