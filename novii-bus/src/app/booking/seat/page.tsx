@@ -48,6 +48,12 @@ export default function SeatSelectionPage() {
       return
     }
     
+    if (!date) {
+      alert('Tanggal keberangkatan tidak ditemukan. Silakan mulai dari dashboard.')
+      router.push('/dashboard')
+      return
+    }
+    
     const selectedSeat = seats.find(s => s.id === selectedSeats[0])
     router.push(`/booking/biodata?busId=${busId}&seatId=${selectedSeats[0]}&harga=${selectedSeat?.harga}&date=${date}`)
   }

@@ -40,6 +40,13 @@ export default function BusSelectionPage() {
       alert('Pilih tipe bus terlebih dahulu')
       return
     }
+    
+    if (!date) {
+      alert('Tanggal keberangkatan tidak ditemukan. Silakan mulai dari dashboard.')
+      router.push('/dashboard')
+      return
+    }
+    
     router.push(`/booking/seat?busId=${selectedBus}&date=${date}`)
   }
 
@@ -90,6 +97,13 @@ export default function BusSelectionPage() {
             Pilih Bus
           </h2>
         </div>
+
+        {!date && (
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-4 rounded-lg mb-6">
+            <p className="font-medium">⚠️ Tanggal keberangkatan tidak ditemukan!</p>
+            <p className="text-sm mt-1">Silakan <Link href="/dashboard" className="underline font-medium">kembali ke halaman awal</Link> dan pilih tanggal keberangkatan.</p>
+          </div>
+        )}
 
         <div className="mb-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">

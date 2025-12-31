@@ -29,12 +29,30 @@ export async function createBooking(formData: FormData) {
     return { error: 'Tanggal keberangkatan harus diisi' }
   }
 
-  // Parse tanggal dengan format YYYY-MM-DD dari input type="date"
-  // Pastikan parse menggunakan UTC untuk menghindari timezone issues
-  const [year, month, day] = tanggalKeberangkatanStr.split('-').map(Number)
+  // Parse tanggal - terima format DD-MM-YYYY atau YYYY-MM-DD
+  let year: number, month: number, day: number
+  
+  if (tanggalKeberangkatanStr.includes('-')) {
+    const parts = tanggalKeberangkatanStr.split('-')
+    
+    // Cek apakah format DD-MM-YYYY atau YYYY-MM-DD
+    if (parts[0].length === 4) {
+      // Format YYYY-MM-DD
+      [year, month, day] = parts.map(Number)
+    } else {
+      // Format DD-MM-YYYY
+      [day, month, year] = parts.map(Number)
+    }
+  } else if (tanggalKeberangkatanStr.includes('/')) {
+    // Format DD/MM/YYYY
+    const parts = tanggalKeberangkatanStr.split('/')
+    ;[day, month, year] = parts.map(Number)
+  } else {
+    return { error: `Format tanggal tidak valid. Gunakan format DD-MM-YYYY. Diterima: ${tanggalKeberangkatanStr}` }
+  }
   
   if (!year || !month || !day || month < 1 || month > 12 || day < 1 || day > 31) {
-    return { error: `Format tanggal tidak valid. Gunakan format YYYY-MM-DD. Diterima: ${tanggalKeberangkatanStr}` }
+    return { error: `Tanggal tidak valid: ${tanggalKeberangkatanStr}. Gunakan format DD-MM-YYYY` }
   }
 
   // Buat Date object dengan UTC untuk menghindari timezone shift

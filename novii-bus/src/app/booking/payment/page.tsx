@@ -29,23 +29,39 @@ export default function PaymentPage() {
     allParams: Object.fromEntries(searchParams.entries())
   })
 
-  // Pastikan date dalam format YYYY-MM-DD
-  let validDate = date
+  // Konversi date ke format DD-MM-YYYY
+  let validDate = ''
   if (date) {
-    // Jika date sudah dalam format YYYY-MM-DD, gunakan langsung
-    // Jika tidak, coba parse
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      console.warn('Date bukan format YYYY-MM-DD:', date)
-      // Coba buat date object dan format ulang
-      try {
+    try {
+      // Cek apakah sudah format YYYY-MM-DD (dari input type="date")
+      if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        const [year, month, day] = date.split('-')
+        validDate = `${day}-${month}-${year}`
+      } 
+      // Cek apakah format DD/MM/YYYY (dari toLocaleDateString)
+      else if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(date)) {
+        const [day, month, year] = date.split('/')
+        validDate = `${day.padStart(2, '0')}-${month.padStart(2, '0')}-${year}`
+      }
+      // Sudah format DD-MM-YYYY
+      else if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(date)) {
+        const [day, month, year] = date.split('-')
+        validDate = `${day.padStart(2, '0')}-${month.padStart(2, '0')}-${year}`
+      }
+      // Coba parse sebagai Date object
+      else {
         const dateObj = new Date(date)
         if (!isNaN(dateObj.getTime())) {
-          validDate = dateObj.toISOString().split('T')[0]
-          console.log('Date dikonversi ke:', validDate)
+          const day = String(dateObj.getDate()).padStart(2, '0')
+          const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+          const year = dateObj.getFullYear()
+          validDate = `${day}-${month}-${year}`
         }
-      } catch (e) {
-        console.error('Gagal convert date:', e)
       }
+      console.log('Date dikonversi dari', date, 'ke', validDate)
+    } catch (e) {
+      console.error('Gagal convert date:', e)
+      validDate = date
     }
   }
 

@@ -4,9 +4,10 @@ import { getRoutes } from '@/app/actions/booking'
 export default async function RouteSelectionPage({
   searchParams,
 }: {
-  searchParams: { from?: string; to?: string; date?: string }
+  searchParams: Promise<{ from?: string; to?: string; date?: string }>
 }) {
-  const { from, to, date } = searchParams
+  const params = await searchParams
+  const { from, to, date } = params
   
   const routes = await getRoutes(from, to)
 
