@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getBooking } from '@/app/actions/booking'
 import { notFound } from 'next/navigation'
+import Navbar from '@/components/Navbar'
 
 export default async function TicketPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

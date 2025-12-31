@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Navbar from '@/components/Navbar'
 
 export default function BiodataPage() {
   const searchParams = useSearchParams()
@@ -44,15 +45,7 @@ export default function BiodataPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gray-900 rounded"></div>
-            <h1 className="text-xl font-bold">TemanBus</h1>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-12">

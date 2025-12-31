@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import Navbar from '@/components/Navbar'
 
 const KOTA_OPTIONS = ['Makassar', 'Toraja', 'Palopo', 'Sorowako', 'Morowali', 'Mamuju']
 
@@ -31,23 +32,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-900 rounded"></div>
-              <h1 className="text-xl font-bold">Traveloka</h1>
-            </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/dashboard" className="text-gray-700 hover:text-gray-900">Pesan</Link>
-              <Link href="/booking" className="text-gray-700 hover:text-gray-900">Kelola Pesanan</Link>
-              <Link href="/dashboard" className="text-gray-700 hover:text-gray-900">ID</Link>
-              <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-20">
