@@ -1,7 +1,12 @@
+'use client'
+
 import Link from 'next/link'
+import { useFormState } from 'react-dom'
 import { loginUser } from '@/app/actions/auth'
 
 export default function LoginPage() {
+  const [state, formAction] = useFormState(loginUser, null)
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -24,7 +29,13 @@ export default function LoginPage() {
           </h2>
         </div>
 
-        <form action={loginUser} className="space-y-6">
+        <form action={formAction} className="space-y-6">
+          {state?.error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              {state.error}
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Email
