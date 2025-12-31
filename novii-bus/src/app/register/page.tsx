@@ -1,7 +1,12 @@
+'use client'
+
 import Link from 'next/link'
+import { useFormState } from 'react-dom'
 import { registerUser } from '@/app/actions/auth'
 
 export default function RegisterPage() {
+  const [state, formAction] = useFormState(registerUser, null)
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -31,7 +36,13 @@ export default function RegisterPage() {
           </h2>
         </div>
 
-        <form action={registerUser} className="space-y-4">
+        <form action={formAction} className="space-y-4">
+          {state?.error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              {state.error}
+            </div>
+          )}
+
           <div>
             <input
               type="text"

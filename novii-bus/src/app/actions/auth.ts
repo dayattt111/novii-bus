@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { hashPassword, verifyPassword, createSession, destroySession } from '@/lib/auth'
 
-export async function registerUser(formData: FormData) {
+export async function registerUser(prevState: any, formData: FormData) {
   const nama = formData.get('nama') as string
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -40,7 +40,7 @@ export async function registerUser(formData: FormData) {
   redirect('/dashboard')
 }
 
-export async function loginUser(formData: FormData) {
+export async function loginUser(prevState: any, formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
