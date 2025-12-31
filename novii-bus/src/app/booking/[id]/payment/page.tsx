@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getBooking, updatePaymentStatus } from '@/app/actions/booking'
 import { notFound } from 'next/navigation'
-import Navbar from '@/components/Navbar'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
 
 export default async function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -19,7 +19,7 @@ export default async function PaymentPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <NavbarWithAuth />
 
       {/* Breadcrumb */}
       <div className="max-w-4xl mx-auto px-4 py-6">

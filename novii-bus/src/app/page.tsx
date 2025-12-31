@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <NavbarWithAuth />
 
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

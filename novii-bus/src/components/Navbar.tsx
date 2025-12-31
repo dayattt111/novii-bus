@@ -19,16 +19,15 @@ export default function Navbar({ user }: { user?: User }) {
             <h1 className="text-xl font-bold text-gray-900">Ovii-Bus</h1>
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/" className="text-gray-700 hover:text-blue-600 transition">
-              Beranda
-            </Link>
-            <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 transition">
-              Pesan Tiket
-            </Link>
             {user && (
-              <Link href="/pesanan" className="text-gray-700 hover:text-blue-600 transition">
-                Pesanan Saya
-              </Link>
+              <>
+                <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 transition">
+                  Pesan Tiket
+                </Link>
+                <Link href="/pesanan" className="text-gray-700 hover:text-blue-600 transition">
+                  Pesanan Saya
+                </Link>
+              </>
             )}
             
             {user ? (
