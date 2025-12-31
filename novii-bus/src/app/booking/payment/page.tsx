@@ -22,8 +22,8 @@ export default function PaymentPage() {
 
   async function handlePayment(prevState: any, formData: FormData) {
     // Validasi tanggal
-    if (!date) {
-      return { error: 'Tanggal keberangkatan tidak valid' }
+    if (!date || date.trim() === '') {
+      return { error: 'Tanggal keberangkatan tidak valid. Silakan kembali ke halaman awal dan pilih tanggal.' }
     }
 
     // Tambahkan data yang sudah ada
@@ -82,6 +82,13 @@ export default function PaymentPage() {
             Pembayaran
           </h2>
         </div>
+
+        {!date && (
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-4 rounded-lg mb-6">
+            <p className="font-medium">⚠️ Tanggal keberangkatan tidak ditemukan!</p>
+            <p className="text-sm mt-1">Silakan <Link href="/dashboard" className="underline font-medium">kembali ke halaman awal</Link> dan pilih tanggal keberangkatan.</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Form Pembayaran */}

@@ -25,13 +25,14 @@ export async function createBooking(formData: FormData) {
   const metodePembayaran = formData.get('metodePembayaran') as string
 
   // Validasi tanggal
-  if (!tanggalKeberangkatanStr) {
+  if (!tanggalKeberangkatanStr || tanggalKeberangkatanStr.trim() === '') {
     return { error: 'Tanggal keberangkatan harus diisi' }
   }
 
-  const tanggalKeberangkatan = new Date(tanggalKeberangkatanStr)
+  // Parse tanggal - input type="date" menghasilkan format YYYY-MM-DD
+  const tanggalKeberangkatan = new Date(tanggalKeberangkatanStr + 'T00:00:00')
   if (isNaN(tanggalKeberangkatan.getTime())) {
-    return { error: 'Format tanggal tidak valid' }
+    return { error: `Format tanggal tidak valid: ${tanggalKeberangkatanStr}` }
   }
 
   // Cek seat masih available
