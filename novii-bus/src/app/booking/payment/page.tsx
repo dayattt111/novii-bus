@@ -17,26 +17,48 @@ export default function PaymentPage() {
   const naikDi = searchParams.get('naikDi') || ''
   const turunDi = searchParams.get('turunDi') || ''
 
+  // Debug: Log semua params
+  console.log('Payment Page Debug:', {
+    busId,
+    seatId,
+    harga,
+    date,
+    namaPenumpang,
+    noHp,
+    dateFromParams: searchParams.get('date'),
+    allParams: Object.fromEntries(searchParams.entries())
+  })
+
+  // Pastikan date dalam format YYYY-MM-DD
+  let validDate = date
+  if (date) {
+    // Jika date sudah dalam format YYYY-MM-DD, gunakan langsung
+    // Jika tidak, coba parse
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      console.warn('Date bukan format YYYY-MM-DD:', date)
+      // Coba buat date object dan format ulang
+      try {
+        const dateObj = new Date(date)
+        if (!isNaN(dateObj.getTime())) {
+          validDate = dateObj.toISOString().split('T')[0]
+          console.log('Date dikonversi ke:', validDate)
+        }
+      } catch (e) {
+        console.error('Gagal convert date:', e)
+      }
+    }
+  }
+
   const biayaLayanan = 5000
   const totalHarga = harga + biayaLayanan
 
   async function handlePayment(prevState: any, formData: FormData) {
-    // Validasi tanggal
-    if (!date || date.trim() === '') {
+    // Validasi tanggal dari formData
+    const tanggalFromForm = formData.get('tanggalKeberangkatan') as string
+    
+    if (!tanggalFromForm || tanggalFromForm === '' || tanggalFromForm === 'null' || tanggalFromForm === 'undefined') {
       return { error: 'Tanggal keberangkatan tidak valid. Silakan kembali ke halaman awal dan pilih tanggal.' }
     }
-
-    // Tambahkan data yang sudah ada
-    formData.append('busId', busId)
-    formData.append('seatId', seatId)
-    formData.append('totalHarga', totalHarga.toString())
-    formData.append('biayaLayanan', biayaLayanan.toString())
-    formData.append('tanggalKeberangkatan', date)
-    formData.append('waktuKeberangkatan', '10:00')
-    formData.append('namaPenumpang', namaPenumpang)
-    formData.append('noHp', noHp)
-    formData.append('naikDi', naikDi)
-    formData.append('turunDi', turunDi)
     
     return await createBooking(formData)
   }
@@ -132,6 +154,18 @@ export default function PaymentPage() {
               </h3>
 
               <form action={formAction} className="space-y-4">
+                {/* Hidden inputs untuk data booking */}
+                <input type="hidden" name="busId" value={busId} />
+                <input type="hidden" name="seatId" value={seatId} />
+                <input type="hidden" name="totalHarga" value={totalHarga} />
+                <input type="hidden" name="biayaLayanan" value={biayaLayanan} />
+                <input type="hidden" name="tanggalKeberangkatan" value={validDate} />
+                <input type="hidden" name="waktuKeberangkatan" value="10:00" />
+                <input type="hidden" name="namaPenumpang" value={namaPenumpang} />
+                <input type="hidden" name="noHp" value={noHp} />
+                <input type="hidden" name="naikDi" value={naikDi} />
+                <input type="hidden" name="turunDi" value={turunDi} />
+
                 {state?.error && (
                   <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                     {state.error}

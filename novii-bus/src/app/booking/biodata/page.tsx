@@ -15,6 +15,12 @@ export default function BiodataPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     
+    if (!date) {
+      alert('Tanggal keberangkatan tidak ditemukan. Silakan mulai dari dashboard.')
+      router.push('/dashboard')
+      return
+    }
+    
     const formData = new FormData(e.currentTarget)
     const namaPenumpang = formData.get('namaPenumpang')
     const noHp = formData.get('noHp')
@@ -26,7 +32,7 @@ export default function BiodataPage() {
       busId: busId || '',
       seatId: seatId || '',
       harga: harga || '',
-      date: date || '',
+      date: date,
       namaPenumpang: namaPenumpang as string,
       noHp: noHp as string,
       naikDi: naikDi as string,
@@ -58,6 +64,13 @@ export default function BiodataPage() {
             Masukkan data penumpang dengan benar
           </p>
         </div>
+
+        {!date && (
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-4 rounded-lg mb-6">
+            <p className="font-medium">⚠️ Tanggal keberangkatan tidak ditemukan!</p>
+            <p className="text-sm mt-1">Silakan <Link href="/dashboard" className="underline font-medium">kembali ke halaman awal</Link> dan pilih tanggal keberangkatan.</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8 space-y-6">
           <div>
