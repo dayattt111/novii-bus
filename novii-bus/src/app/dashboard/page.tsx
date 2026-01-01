@@ -26,36 +26,33 @@ export default function DashboardPage() {
       return
     }
 
-    // Navigate ke halaman pilih rute
     router.push(`/booking/route?from=${kotaAsal}&to=${kotaTujuan}&date=${tanggal}`)
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-4 py-12">
-        <div className="text-center mb-10">
-          <div className="text-5xl mb-4">🎫</div>
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent mb-3">
+      <main className="max-w-3xl mx-auto px-4 py-16">
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">
             Pesan Tiket Bus
-          </h2>
-          <p className="text-gray-600 text-lg">Pilih rute perjalananmu dan mulai petualangan! 🌴</p>
+          </h1>
+          <p className="text-gray-600 text-lg">Pilih rute dan tanggal perjalanan Anda</p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-orange-100 p-8">
+        <div className="bg-white shadow-sm border border-gray-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  📍 Kota Asal
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Kota Asal
                 </label>
                 <select
                   value={kotaAsal}
                   onChange={(e) => setKotaAsal(e.target.value)}
                   required
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400 transition"
+                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-orange-600 transition"
                 >
                   <option value="">Pilih kota asal</option>
                   {KOTA_OPTIONS.map((kota) => (
@@ -67,14 +64,14 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  🎯 Kota Tujuan
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Kota Tujuan
                 </label>
                 <select
                   value={kotaTujuan}
                   onChange={(e) => setKotaTujuan(e.target.value)}
                   required
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400 transition"
+                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-orange-600 transition"
                 >
                   <option value="">Pilih kota tujuan</option>
                   {KOTA_OPTIONS.map((kota) => (
@@ -87,8 +84,8 @@ export default function DashboardPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                📅 Tanggal Keberangkatan
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Tanggal Keberangkatan
               </label>
               <input
                 type="date"
@@ -96,15 +93,15 @@ export default function DashboardPage() {
                 onChange={(e) => setTanggal(e.target.value)}
                 required
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400 transition"
+                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-orange-600 transition"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-4 rounded-xl text-lg font-semibold hover:shadow-xl transition-all transform hover:-translate-y-0.5"
+              className="w-full bg-orange-600 text-white px-6 py-3 text-lg font-semibold hover:bg-orange-700 transition"
             >
-              🔍 Cari Bus Sekarang
+              Cari Bus
             </button>
           </form>
         </div>

@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffbf5;
+  --background: #fafafa;
   --foreground: #1a1a1a;
-  --primary: #ff6b6b;
-  --primary-dark: #ee5a52;
-  --secondary: #ffd93d;
-  --accent: #6bcf7f;
+  --primary: #ff6b35;
+  --primary-dark: #e85d2f;
+  --secondary: #f7931e;
+  --accent: #fdb913;
 }
 
 @theme inline {
@@ -17,10 +17,11 @@
 }
 
 body {
-  background: linear-gradient(135deg, #fffbf5 0%, #fff4e6 100%);
+  background: #fafafa;
   color: #1a1a1a;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 input, textarea, select {
@@ -29,5 +30,5 @@ input, textarea, select {
 }
 
 input::placeholder, textarea::placeholder {
-  color: #94a3b8 !important;
+  color: #9ca3af !important;
 }
