@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { createBooking } from '@/app/actions/booking'
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 
 type Props = {
   busId: string
@@ -62,6 +62,8 @@ export default function PaymentForm({
 
   const biayaLayanan = 5000
   const totalHarga = harga + biayaLayanan
+
+  const [selectedMethod, setSelectedMethod] = useState<string>('Kartu Kredit/Debit')
 
   async function handlePayment(prevState: any, formData: FormData) {
     // Validasi tanggal dari formData
@@ -155,32 +157,91 @@ export default function PaymentForm({
                 <input
                   type="radio"
                   name="metodePembayaran"
-                  value="Kartu Kredit/Debit"
-                  defaultChecked
+                  onChange={(e) => setSelectedMethod(e.target.value)}
                   className="w-5 h-5 text-orange-600"
                 />
                 <span className="ml-3 font-medium text-gray-900">Kartu Kredit/Debit</span>
               </label>
+
+              {selectedMethod === 'Kartu Kredit/Debit' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+                  <p className="font-semibold text-gray-900">Informasi Pembayaran Kartu</p>
+                  <p className="text-sm text-gray-700">Silakan masukkan detail kartu kredit/debit Anda:</p>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-gray-600">• Visa, Mastercard, JCB diterima</p>
+                    <p className="text-gray-600">• Transaksi aman dengan enkripsi SSL</p>
+                    <p className="text-gray-600">• Pembayaran akan diproses setelah klik "Bayar Sekarang"</p>
+                  </div>
+                </div>
+              )}
 
               <label className="flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
                 <input
                   type="radio"
                   name="metodePembayaran"
                   value="Transfer Bank"
+                  onChange={(e) => setSelectedMethod(e.target.value)}
                   className="w-5 h-5 text-orange-600"
                 />
                 <span className="ml-3 font-medium text-gray-900">Transfer Bank</span>
               </label>
+
+              {selectedMethod === 'Transfer Bank' && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-3">
+                  <p className="font-semibold text-gray-900">Transfer ke Rekening Berikut:</p>
+                  <div className="bg-white rounded-lg p-4 space-y-3">
+                    <div>
+                      <p className="text-sm text-gray-600">Bank BCA</p>
+                      <p className="text-lg font-bold text-gray-900">1234567890</p>
+                      <p className="text-sm text-gray-700">a.n. PT Jalan Terus</p>
+                    </div>
+                    <div className="border-t pt-3">
+                      <p className="text-sm text-gray-600">Bank Mandiri</p>
+                      <p className="text-lg font-bold text-gray-900">9876543210</p>
+                      <p className="text-sm text-gray-700">a.n. PT Jalan Terus</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 mt-2">
+                    💡 Transfer tepat <span className="font-bold text-orange-600">Rp {totalHarga.toLocaleString('id-ID')}</span> agar mudah diverifikasi
+                  </p>
+                </div>
+              )}
 
               <label className="flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
                 <input
                   type="radio"
                   name="metodePembayaran"
                   value="Dompet Digital"
+                  onChange={(e) => setSelectedMethod(e.target.value)}
                   className="w-5 h-5 text-orange-600"
                 />
-                <span className="ml-3 font-medium text-gray-900">Dompet Digital</span>
+                <span className="ml-3 font-medium text-gray-900">Dompet Digital (QRIS)</span>
               </label>
+
+              {selectedMethod === 'Dompet Digital' && (
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <p className="font-semibold text-gray-900 mb-3">Scan QR Code untuk Bayar</p>
+                  <div className="bg-white rounded-lg p-6 flex flex-col items-center">
+                    <div className="w-48 h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center mb-4">
+                      <div className="text-center">
+                        <div className="text-6xl mb-2">📱</div>
+                        <p className="text-sm font-medium text-gray-700">QR Code QRIS</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-700 text-center mb-2">
+                      Silakan scan QR Code di atas menggunakan aplikasi:
+                    </p>
+                    <p className="text-xs text-gray-600 text-center">
+                      GoPay • OVO • Dana • ShopeePay • LinkAja
+                    </p>
+                    <div className="mt-4 text-center">
+                      <p className="text-lg font-bold text-orange-600">
+                        Rp {totalHarga.toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <button
                 type="submit"
