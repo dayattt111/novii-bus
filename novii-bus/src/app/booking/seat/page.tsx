@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getSeatsByBus } from '@/app/actions/booking'
-import Navbar from '@/components/Navbar'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
 
 type Seat = {
   id: string
@@ -70,37 +70,10 @@ export default function SeatSelectionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-900 rounded"></div>
-              <h1 className="text-xl font-bold">Traveloka</h1>
-            </div>
-            <nav className="flex items-center space-x-8">
-              <Link href="/dashboard" className="text-gray-700 hover:text-gray-900">Tiket Bus</Link>
-              <Link href="/" className="text-gray-700 hover:text-gray-900">Tiket Pesawat</Link>
-              <Link href="/" className="text-gray-700 hover:text-gray-900">Hotel</Link>
-              <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* Breadcrumb */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="text-sm text-gray-600">
-          <Link href="/dashboard" className="hover:text-gray-900">Beranda</Link>
-          {' / '}
-          <Link href="/booking/route" className="hover:text-gray-900">Hasil Pencarian</Link>
-          {' / '}
-          <span className="text-gray-900 font-medium">Pilih Kursi</span>
-        </div>
-      </div>
+      <NavbarWithAuth />
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 pb-20">
+      <main className="max-w-4xl mx-auto px-4 py-8 pb-20">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Pilih Kursi

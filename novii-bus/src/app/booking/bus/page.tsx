@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getRoutesBySearch, getBusesByRoute } from '@/app/actions/booking'
-import Navbar from '@/components/Navbar'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
 
 type Route = {
   id: string
@@ -68,7 +68,7 @@ export default function BusSelectionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <NavbarWithAuth />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-8">

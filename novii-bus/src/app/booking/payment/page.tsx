@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createBooking } from '@/app/actions/booking'
 import { useActionState } from 'react'
-import Navbar from '@/components/Navbar'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
 
 export default function PaymentPage() {
   const searchParams = useSearchParams()
@@ -84,7 +84,7 @@ export default function PaymentPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <NavbarWithAuth />
 
       {/* Breadcrumb */}
       <div className="max-w-4xl mx-auto px-4 py-6">

@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
 
 export default function BiodataPage() {
   const searchParams = useSearchParams()
@@ -45,7 +45,7 @@ export default function BiodataPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <NavbarWithAuth />
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-12">
