@@ -1,4 +1,6 @@
-### Novii Buss
+# Project Booking Bus
+
+![Preview Aplikasi](novii-bus/src/image.png)
 
 # Next Js
 
