@@ -34,7 +34,7 @@ export default function BusSelectionPage() {
 
   useEffect(() => {
     if (from && to) {
-      getRoutesBySearch(from, to).then((data) => {
+      getRoutesBySearch(from, to).then((data: any) => {
         setRoutes(data as any)
         setLoading(false)
       })
@@ -43,7 +43,7 @@ export default function BusSelectionPage() {
 
   useEffect(() => {
     if (selectedRoute) {
-      getBusesByRoute(selectedRoute).then((data) => {
+      getBusesByRoute(selectedRoute).then((data: any) => {
         setBuses(data as any)
       })
     }

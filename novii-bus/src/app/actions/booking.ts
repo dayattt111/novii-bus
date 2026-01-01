@@ -146,6 +146,18 @@ export async function getRoutes(kotaAsal?: string, kotaTujuan?: string) {
   })
 }
 
+export async function getRoutesBySearch(from: string, to: string) {
+  return await prisma.route.findMany({
+    where: {
+      kotaAsal: from,
+      kotaTujuan: to,
+    },
+    include: {
+      buses: true,
+    },
+  })
+}
+
 export async function getBusesByRoute(routeId: string) {
   return await prisma.bus.findMany({
     where: { routeId },
