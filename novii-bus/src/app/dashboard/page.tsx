@@ -1,39 +1,22 @@
-'use client'
+import { redirect } from 'next/navigation'
+import { getSession } from '@/lib/auth'
+import NavbarWithAuth from '@/components/NavbarWithAuth'
+import DashboardForm from './DashboardForm'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import Navbar from '@/components/Navbar'
-
-const KOTA_OPTIONS = ['Makassar', 'Toraja', 'Palopo', 'Sorowako', 'Morowali', 'Mamuju']
-
-export default function DashboardPage() {
-  const router = useRouter()
-  const [kotaAsal, setKotaAsal] = useState('')
-  const [kotaTujuan, setKotaTujuan] = useState('')
-  const [tanggal, setTanggal] = useState('')
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!kotaAsal || !kotaTujuan || !tanggal) {
-      alert('Semua field harus diisi')
-      return
-    }
-
-    if (kotaAsal === kotaTujuan) {
-      alert('Kota asal dan tujuan tidak boleh sama')
-      return
-    }
-
-    router.push(`/booking/route?from=${kotaAsal}&to=${kotaTujuan}&date=${tanggal}`)
+export default async function DashboardPage() {
+  const user = await getSession()
+  
+  if (!user) {
+    redirect('/login')
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-
-      <main className="max-w-3xl mx-auto px-4 py-16">
+    <div className="min-h-screen bg-gray-50">
+      <NavbarWithAuth />
+      <DashboardForm />
+    </div>
+  )
+}
         <div className="mb-10 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-3">
             Pesan Tiket Bus

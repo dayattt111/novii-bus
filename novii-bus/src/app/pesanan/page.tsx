@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import NavbarWithAuth from '@/components/NavbarWithAuth'
+import AppNavbarWithAuth from '@/components/AppNavbarWithAuth'
 
 export default async function PesananPage() {
   const user = await getSession()
@@ -29,7 +29,7 @@ export default async function PesananPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavbarWithAuth />
+      <AppNavbarWithAuth />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
