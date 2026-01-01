@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import NavbarWithAuth from '@/components/NavbarWithAuth'
+import { getPopularRoutes } from '@/app/actions/booking'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const popularRoutes = await getPopularRoutes()
+
   return (
     <div className="min-h-screen">
       <NavbarWithAuth />
@@ -69,6 +72,56 @@ export default function HomePage() {
             >
               Daftar
             </Link>
+          </div>
+
+          {/* Popular Routes */}
+          <div className="mb-20">
+            <h2 className="text-3xl font-bold mb-8 text-gray-900">
+              🚍 Rute Populer Tersedia
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {popularRoutes.map((route) => (
+                <div
+                  key={route.id}
+                  className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl border-2 border-orange-200 hover:shadow-xl hover:border-orange-300 transition-all"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-bold text-lg text-gray-900">{route.kotaAsal}</span>
+                        <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        <span className="font-bold text-lg text-gray-900">{route.kotaTujuan}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Bus Tersedia:</span>
+                      <span className="font-semibold text-orange-600">{route.availableBuses} bus</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Mulai dari:</span>
+                      <span className="font-bold text-green-600">
+                        Rp {route.minPrice.toLocaleString('id-ID')}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <Link
+                    href={`/dashboard?from=${encodeURIComponent(route.kotaAsal)}&to=${encodeURIComponent(route.kotaTujuan)}`}
+                    className="mt-4 block w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-lg text-center font-semibold hover:shadow-lg transition"
+                  >
+                    Pesan Sekarang
+                  </Link>
+                </div>
+              ))}
+            </div>
+            {popularRoutes.length === 0 && (
+              <p className="text-gray-500 text-center">Belum ada rute tersedia</p>
+            )}
           </div>
 
           {/* Features */}

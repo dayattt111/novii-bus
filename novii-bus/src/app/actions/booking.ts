@@ -174,3 +174,59 @@ export async function getSeatsByBus(busId: string) {
     orderBy: { nomorKursi: 'asc' },
   })
 }
+
+export async function getPopularRoutes() {
+  // Ambil rute populer dengan jumlah bus terbanyak
+  const routes = await prisma.route.findMany({
+    include: {
+      buses: {
+        include: {
+          seats: {
+            where: { isBooked: false },
+          },
+        },
+      },
+    },
+    take: 6,
+    orderBy: {
+      buses: {
+        _count: 'desc',
+      },
+    },
+  })
+
+  // Format data untuk tampilan
+  return routes.map((route) => {
+    const availableBuses = route.buses.filter((bus) => bus.seats.length > 0)
+    const minPrice = availableBuses.length > 0
+      ? Math.min(...availableBuses.map((bus) => bus.harga))
+      : 0
+
+    return {
+      id: route.id,
+      kotaAsal: route.kotaAsal,
+      kotaTujuan: route.kotaTujuan,
+      jumlahBus: route.buses.length,
+      minPrice,
+      availableBuses: availableBuses.length,
+    }
+  })
+}
+
+export async function getAllCities() {
+  // Ambil semua kota yang ada di database (dari kotaAsal dan kotaTujuan)
+  const routes = await prisma.route.findMany({
+    select: {
+      kotaAsal: true,
+      kotaTujuan: true,
+    },
+  })
+
+  const cities = new Set<string>()
+  routes.forEach((route) => {
+    cities.add(route.kotaAsal)
+    cities.add(route.kotaTujuan)
+  })
+
+  return Array.from(cities).sort()
+}
