@@ -2,16 +2,16 @@
 
 Untuk deployment yang sukses, pastikan environment variables berikut diset di Vercel:
 
-## 1. DATABASE_URL (Pooled Connection)
+## 1. DATABASE_URL (Pooled Connection - PRODUCTION)
 ```
-postgresql://neondb_owner:npg_M6IfctvzUy4b@ep-raspy-feather-a18jmubf-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+postgresql://neondb_owner:npg_prgObhmQY16V@ep-empty-paper-ahlpnuj6-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require
 ```
 
 ## 2. DIRECT_URL (Direct Connection - untuk migrations)
 ```
-postgresql://neondb_owner:npg_M6IfctvzUy4b@ep-raspy-feather-a18jmubf.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+postgresql://neondb_owner:npg_prgObhmQY16V@ep-empty-paper-ahlpnuj6.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require
 ```
-**Note**: Ganti `-pooler` dengan direct connection (hapus `-pooler` dari hostname)
+**Note**: Tanpa `-pooler` untuk direct connection
 
 ## 3. NEXTAUTH_SECRET
 ```
@@ -22,7 +22,6 @@ z71QSUpKfJtJYDtm5m/pcXJ1AOouF9+fCcInZsK9vqE=
 ```
 https://novii-bus-83q7.vercel.app
 ```
-**Note**: Ganti dengan URL Vercel yang sebenarnya
 
 ## 5. NODE_ENV (optional, auto-set by Vercel)
 ```
