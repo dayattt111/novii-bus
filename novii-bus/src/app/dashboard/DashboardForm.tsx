@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const KOTA_OPTIONS = ['Makassar', 'Toraja', 'Palopo', 'Sorowako', 'Morowali', 'Mamuju']
 
@@ -51,6 +52,29 @@ export default function DashboardForm() {
         <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4">
           Pilih rute dan tanggal perjalanan untuk menemukan bus terbaik
         </p>
+      </div>
+
+      {/* Quick Link to My Tickets - Mobile */}
+      <div className="max-w-4xl mx-auto mb-6 sm:mb-8">
+        <Link 
+          href="/pesanan"
+          className="flex items-center justify-between bg-gradient-to-r from-orange-600 to-orange-500 text-white p-4 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white bg-opacity-20 flex items-center justify-center">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+              </svg>
+            </div>
+            <div className="text-left">
+              <p className="font-bold text-base sm:text-lg">Tiket Saya</p>
+              <p className="text-xs sm:text-sm text-orange-100">Lihat semua pesanan tiket Anda</p>
+            </div>
+          </div>
+          <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       </div>
 
       {/* Booking Form */}
