@@ -14,65 +14,42 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-900 rounded"></div>
-              <h1 className="text-xl font-bold">Traveloka</h1>
-            </div>
-            <nav className="flex items-center space-x-8">
-              <Link href="/dashboard" className="text-gray-700 hover:text-gray-900">Tiket Bus</Link>
-              <Link href="/" className="text-gray-700 hover:text-gray-900">Tiket Pesawat</Link>
-              <Link href="/" className="text-gray-700 hover:text-gray-900">Hotel</Link>
-              <Link href="/" className="text-gray-700 hover:text-gray-900">ID</Link>
-              <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* Breadcrumb */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="text-sm text-gray-600">
-          <Link href="/dashboard" className="hover:text-gray-900">Pemesanan</Link>
-          {' / '}
-          <Link href="/" className="hover:text-gray-900">Tiket Bus</Link>
-          {' / '}
-          <span className="text-gray-900 font-medium">E-tiket</span>
-        </div>
-      </div>
+      <NavbarWithAuth />
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 pb-20">
+      <main className="max-w-4xl mx-auto px-4 py-8 pb-20">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            E-tiket
+            E-tiket Anda
           </h2>
+          <p className="text-gray-600">Simpan e-tiket ini untuk perjalanan Anda</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-orange-100">
           {/* Header Tiket */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-2xl font-bold">
-                  {booking.bus.route.kotaAsal} ke {booking.bus.route.kotaTujuan}
+                  {booking.bus.route.kotaAsal} → {booking.bus.route.kotaTujuan}
                 </h3>
-                <p className="text-blue-100">Kode Tiket</p>
+                <p className="text-orange-100">E-Tiket Bus</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-blue-100">Tanggal</p>
+                <p className="text-sm text-orange-100">Tanggal Keberangkatan</p>
                 <p className="text-xl font-bold">
-                  {new Date(booking.tanggalKeberangkatan).toLocaleDateString('id-ID')}
+                  {new Date(booking.tanggalKeberangkatan).toLocaleDateString('id-ID', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                  })}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 p-6">
-            {/* Detail Penumpang */}
+            {/* Detail Penumpang & Perjalanan */}
             <div className="md:col-span-2">
               <h4 className="text-lg font-semibold text-gray-900 mb-4">
                 Detail Penumpang
@@ -81,11 +58,11 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <p className="text-sm text-gray-600">Nama</p>
-                  <p className="font-medium text-gray-900">{booking.namaPenumpang}</p>
+                  <p className="font-semibold text-gray-900">{booking.namaPenumpang}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Nomor Telepon</p>
-                  <p className="font-medium text-gray-900">{booking.noHp}</p>
+                  <p className="font-semibold text-gray-900">{booking.noHp}</p>
                 </div>
               </div>
 
@@ -96,34 +73,54 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Rute</p>
-                  <p className="font-medium text-gray-900">
-                    {booking.bus.route.kotaAsal} ke {booking.bus.route.kotaTujuan}
+                  <p className="font-semibold text-gray-900">
+                    {booking.bus.route.kotaAsal} → {booking.bus.route.kotaTujuan}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Tanggal</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="font-semibold text-gray-900">
                     {new Date(booking.tanggalKeberangkatan).toLocaleDateString('id-ID')}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Waktu</p>
-                  <p className="font-medium text-gray-900">{booking.waktuKeberangkatan}</p>
+                  <p className="text-sm text-gray-600">Waktu Keberangkatan</p>
+                  <p className="font-semibold text-gray-900">{booking.waktuKeberangkatan}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Tempat Duduk</p>
-                  <p className="font-medium text-gray-900">{booking.seat.nomorKursi}</p>
+                  <p className="text-sm text-gray-600">Nomor Kursi</p>
+                  <p className="font-semibold text-orange-600 text-lg">{booking.seat.nomorKursi}</p>
                 </div>
+                <div>
+                  <p className="text-sm text-gray-600">Tipe Bus</p>
+                  <p className="font-semibold text-gray-900">{booking.bus.tipe}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Nama Bus</p>
+                  <p className="font-semibold text-gray-900">{booking.bus.nama}</p>
+                </div>
+                {booking.naikDi && (
+                  <div>
+                    <p className="text-sm text-gray-600">Naik Di</p>
+                    <p className="font-semibold text-gray-900">{booking.naikDi}</p>
+                  </div>
+                )}
+                {booking.turunDi && (
+                  <div>
+                    <p className="text-sm text-gray-600">Turun Di</p>
+                    <p className="font-semibold text-gray-900">{booking.turunDi}</p>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* QR Code */}
-            <div className="flex flex-col items-center justify-center border-l pl-6">
+            <div className="flex flex-col items-center justify-center border-l border-gray-200 pl-6">
               <h4 className="text-lg font-semibold text-gray-900 mb-4">
                 Kode QR
               </h4>
               {booking.qrCode && (
-                <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
+                <div className="bg-white p-4 rounded-xl border-2 border-orange-200 shadow-sm">
                   <Image
                     src={booking.qrCode}
                     alt="QR Code"
@@ -133,24 +130,51 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
                   />
                 </div>
               )}
+              <p className="text-xs text-gray-500 mt-3 text-center max-w-[200px]">
+                Tunjukkan QR Code ini kepada petugas saat naik bus
+              </p>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="bg-gray-50 px-6 py-4 border-t">
-            <p className="text-xs text-center text-gray-500">
-              Tunjukkan tiket ini (QR Code) kepada petugas saat akan naik bus.
+          <div className="bg-orange-50 px-6 py-4 border-t border-orange-100">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Total Pembayaran</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  Rp {booking.totalHarga.toLocaleString('id-ID')}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-600">Status Pembayaran</p>
+                <p className={`font-semibold text-lg ${
+                  booking.statusPembayaran === 'Lunas' 
+                    ? 'text-green-600' 
+                    : 'text-orange-600'
+                }`}>
+                  {booking.statusPembayaran}
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-center text-gray-500 pt-3 border-t border-orange-200">
+              Simpan e-tiket ini dan tunjukkan QR Code kepada petugas saat naik bus
             </p>
           </div>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-8 flex justify-center gap-4">
           <Link
             href="/dashboard"
-            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+            className="inline-block bg-gray-100 text-gray-700 px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition"
           >
-            Unduh E-tiket
+            Kembali ke Dashboard
           </Link>
+          <button
+            onClick={() => window.print()}
+            className="inline-block bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition"
+          >
+            Cetak E-tiket
+          </button>
         </div>
       </main>
     </div>
