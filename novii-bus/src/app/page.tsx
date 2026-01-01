@@ -3,8 +3,27 @@ import NavbarWithAuth from '@/components/NavbarWithAuth'
 import ScrollAnimation from '@/components/ScrollAnimation'
 import { getPopularRoutes } from '@/app/actions/booking'
 
+// Force dynamic rendering to avoid build-time database calls
+export const dynamic = 'force-dynamic'
+
+type PopularRoute = {
+  id: string
+  kotaAsal: string
+  kotaTujuan: string
+  jumlahBus: number
+  minPrice: number
+  availableBuses: number
+}
+
 export default async function HomePage() {
-  const popularRoutes = await getPopularRoutes()
+  // Handle database connection errors during build
+  let popularRoutes: PopularRoute[] = []
+  try {
+    popularRoutes = await getPopularRoutes()
+  } catch (error) {
+    console.error('Failed to fetch popular routes:', error)
+    // Continue with empty array if database not available
+  }
 
   return (
     <div className="min-h-screen bg-white">
