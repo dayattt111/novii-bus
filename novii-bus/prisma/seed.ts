@@ -17,75 +17,150 @@ const prisma = new PrismaClient({
 async function main() {
   console.log('🌱 Seeding database...')
 
-  // Buat Routes
-  const routes = [
-    { kotaAsal: 'Makassar', kotaTujuan: 'Toraja', harga: 250000 },
-    { kotaAsal: 'Makassar', kotaTujuan: 'Palopo', harga: 200000 },
-    { kotaAsal: 'Makassar', kotaTujuan: 'Sorowako', harga: 300000 },
-    { kotaAsal: 'Makassar', kotaTujuan: 'Morowali', harga: 350000 },
-    { kotaAsal: 'Makassar', kotaTujuan: 'Mamuju', harga: 220000 },
-    { kotaAsal: 'Toraja', kotaTujuan: 'Makassar', harga: 250000 },
-    { kotaAsal: 'Palopo', kotaTujuan: 'Makassar', harga: 200000 },
+  // Kota-kota utama di Sulawesi
+  const cities = [
+    'Makassar', 'Manado', 'Palu', 'Kendari', 'Gorontalo',
+    'Palopo', 'Toraja', 'Mamuju', 'Bau-Bau', 'Bitung',
+    'Pare-Pare', 'Watampone', 'Bulukumba', 'Kolaka', 'Rantepao'
   ]
 
-  for (const route of routes) {
-    await prisma.route.upsert({
-      where: {
-        kotaAsal_kotaTujuan: {
-          kotaAsal: route.kotaAsal,
-          kotaTujuan: route.kotaTujuan,
-        },
-      },
-      update: {},
-      create: route,
+  // Generate rute populer (tidak semua kombinasi)
+  const popularRoutes = []
+  
+  // Dari Makassar ke semua kota
+  for (let i = 1; i < cities.length; i++) {
+    popularRoutes.push({
+      kotaAsal: 'Makassar',
+      kotaTujuan: cities[i],
+      harga: 100000 + (i * 25000)
+    })
+    // Rute balik
+    popularRoutes.push({
+      kotaAsal: cities[i],
+      kotaTujuan: 'Makassar',
+      harga: 100000 + (i * 25000)
     })
   }
 
-  console.log('✅ Routes created')
-
-  // Ambil route pertama untuk contoh
-  const route1 = await prisma.route.findFirst({
-    where: { kotaAsal: 'Makassar', kotaTujuan: 'Toraja' },
-  })
-
-  if (route1) {
-    // Buat Buses
-    const buses = [
-      { routeId: route1.id, tipe: 'Ekonomi', nama: 'Bus Ekonomi 1', imageUrl: null },
-      { routeId: route1.id, tipe: 'Eksekutif', nama: 'Bus Eksekutif 1', imageUrl: null },
-      { routeId: route1.id, tipe: 'Sleeper', nama: 'Bus Sleeper 1', imageUrl: null },
-    ]
-
-    for (const bus of buses) {
-      const createdBus = await prisma.bus.create({
-        data: bus,
-      })
-
-      // Buat Seats untuk setiap bus
-      const seatLetters = ['A', 'B', 'C']
-      const seatNumbers = [1, 2, 3, 4]
+  // Tambah rute antar kota besar
+  const majorCities = ['Manado', 'Palu', 'Kendari', 'Gorontalo', 'Palopo']
+  for (let i = 0; i < majorCities.length; i++) {
+    for (let j = i + 1; j < majorCities.length; j++) {
+      const distance = Math.abs(i - j)
+      const harga = 150000 + (distance * 30000)
       
-      let seatPrice = 150000
-      if (bus.tipe === 'Eksekutif') seatPrice = 200000
-      if (bus.tipe === 'Sleeper') seatPrice = 250000
-
-      for (const letter of seatLetters) {
-        for (const number of seatNumbers) {
-          await prisma.seat.create({
-            data: {
-              busId: createdBus.id,
-              nomorKursi: `${letter}${number}`,
-              harga: seatPrice,
-              isBooked: false,
-            },
-          })
-        }
-      }
+      popularRoutes.push({
+        kotaAsal: majorCities[i],
+        kotaTujuan: majorCities[j],
+        harga: harga
+      })
+      popularRoutes.push({
+        kotaAsal: majorCities[j],
+        kotaTujuan: majorCities[i],
+        harga: harga
+      })
     }
-
-    console.log('✅ Buses and Seats created')
   }
 
+  console.log(`📍 Creating ${popularRoutes.length} routes...`)
+
+  // Hapus data lama dalam urutan yang benar (foreign key constraint)
+  console.log('   Deleting old data...')
+  await prisma.booking.deleteMany({})
+  await prisma.seat.deleteMany({})
+  await prisma.bus.deleteMany({})
+  await prisma.route.deleteMany({})
+  console.log('   Old data deleted')
+  
+  await prisma.route.createMany({
+    data: popularRoutes,
+    skipDuplicates: true,
+  })
+
+  console.log('✅ Routes created')
+
+  // Ambil semua routes
+  const allRoutes = await prisma.route.findMany()
+  
+  // Tipe bus dengan konfigurasi
+  const busTypes = [
+    { 
+      tipe: 'Ekonomi', 
+      seats: { rows: 10, columns: 4 }, 
+      priceMultiplier: 1.0 
+    },
+    { 
+      tipe: 'Bisnis', 
+      seats: { rows: 8, columns: 3 }, 
+      priceMultiplier: 1.5 
+    },
+    { 
+      tipe: 'Eksekutif', 
+      seats: { rows: 6, columns: 3 }, 
+      priceMultiplier: 2.0 
+    },
+    { 
+      tipe: 'Sleeper', 
+      seats: { rows: 5, columns: 2 }, 
+      priceMultiplier: 2.5 
+    },
+  ]
+
+  let busCount = 0
+  let seatCount = 0
+
+  console.log(`🚌 Creating buses and seats...`)
+
+  // Untuk setiap route, buat 1-2 bus
+  for (const route of allRoutes) {
+    // Pilih 1-2 tipe bus
+    const numBuses = Math.random() > 0.5 ? 2 : 1
+    const selectedTypes = busTypes.slice(0, numBuses)
+
+    for (let i = 0; i < selectedTypes.length; i++) {
+      const busType = selectedTypes[i]
+      
+      const createdBus = await prisma.bus.create({
+        data: {
+          routeId: route.id,
+          tipe: busType.tipe,
+          nama: `${busType.tipe} ${route.kotaAsal}-${route.kotaTujuan}`,
+          imageUrl: null,
+        },
+      })
+
+      busCount++
+
+      // Buat Seats
+      const seats = []
+      const seatLetters = ['A', 'B', 'C', 'D'].slice(0, busType.seats.columns)
+      const seatPrice = Math.round(route.harga * busType.priceMultiplier / (busType.seats.rows * busType.seats.columns))
+
+      for (const letter of seatLetters) {
+        for (let row = 1; row <= busType.seats.rows; row++) {
+          seats.push({
+            busId: createdBus.id,
+            nomorKursi: `${letter}${row}`,
+            harga: seatPrice,
+            isBooked: false,
+          })
+          seatCount++
+        }
+      }
+
+      // Bulk insert seats
+      await prisma.seat.createMany({
+        data: seats,
+      })
+    }
+
+    // Progress log setiap 10 routes
+    if (busCount % 20 === 0) {
+      console.log(`   Progress: ${busCount} buses created...`)
+    }
+  }
+
+  console.log(`✅ Created ${busCount} buses with ${seatCount} seats total`)
   console.log('🎉 Seeding completed!')
 }
 
