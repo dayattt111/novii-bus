@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import NavbarWithAuth from '@/components/NavbarWithAuth'
+import ScrollAnimation from '@/components/ScrollAnimation'
 import { getPopularRoutes } from '@/app/actions/booking'
 
 export default async function HomePage() {
@@ -82,36 +83,41 @@ export default async function HomePage() {
 
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 -mt-24 relative z-10">
-            <div className="bg-white p-8 shadow-xl border-t-4 border-orange-600 hover:shadow-2xl transition-shadow transform hover:-translate-y-2 transition-all duration-300">
-              <div className="text-4xl font-bold text-orange-600 mb-2">48+</div>
-              <div className="text-gray-600 font-medium">Rute Tersedia</div>
-            </div>
-            <div className="bg-white p-8 shadow-xl border-t-4 border-teal-500 hover:shadow-2xl transition-shadow transform hover:-translate-y-2 transition-all duration-300">
-              <div className="text-4xl font-bold text-teal-500 mb-2">72+</div>
-              <div className="text-gray-600 font-medium">Armada Bus</div>
-            </div>
-            <div className="bg-white p-8 shadow-xl border-t-4 border-yellow-500 hover:shadow-2xl transition-shadow transform hover:-translate-y-2 transition-all duration-300">
-              <div className="text-4xl font-bold text-yellow-500 mb-2">15</div>
-              <div className="text-gray-600 font-medium">Kota Tujuan</div>
-            </div>
+            <ScrollAnimation animation="fadeInUp" delay={0}>
+              <div className="bg-white p-8 shadow-xl border-t-4 border-orange-600 hover:shadow-2xl transition-shadow transform hover:-translate-y-2 transition-all duration-300">
+                <div className="text-4xl font-bold text-orange-600 mb-2">48+</div>
+                <div className="text-gray-600 font-medium">Rute Tersedia</div>
+              </div>
+            </ScrollAnimation>
+            <ScrollAnimation animation="fadeInUp" delay={100}>
+              <div className="bg-white p-8 shadow-xl border-t-4 border-teal-500 hover:shadow-2xl transition-shadow transform hover:-translate-y-2 transition-all duration-300">
+                <div className="text-4xl font-bold text-teal-500 mb-2">72+</div>
+                <div className="text-gray-600 font-medium">Armada Bus</div>
+              </div>
+            </ScrollAnimation>
+            <ScrollAnimation animation="fadeInUp" delay={200}>
+              <div className="bg-white p-8 shadow-xl border-t-4 border-yellow-500 hover:shadow-2xl transition-shadow transform hover:-translate-y-2 transition-all duration-300">
+                <div className="text-4xl font-bold text-yellow-500 mb-2">15</div>
+                <div className="text-gray-600 font-medium">Kota Tujuan</div>
+              </div>
+            </ScrollAnimation>
           </div>
 
           {/* Popular Routes */}
           <div className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-3 animate-fadeInUp">
-                Rute Populer
-              </h2>
-              <p className="text-lg text-gray-600 animate-fadeInUp animation-delay-100">Temukan perjalanan terbaik untuk Anda</p>
-            </div>
+            <ScrollAnimation animation="fadeInUp">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold text-gray-900 mb-3">
+                  Rute Populer
+                </h2>
+                <p className="text-lg text-gray-600">Temukan perjalanan terbaik untuk Anda</p>
+              </div>
+            </ScrollAnimation>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {popularRoutes.map((route, index) => (
-                <div
-                  key={route.id}
-                  className="group relative bg-white shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden animate-fadeInUp"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
+                <ScrollAnimation key={route.id} animation="scaleIn" delay={index * 100}>
+                  <div className="group relative bg-white shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   {/* Decorative gradient bar */}
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-yellow-500 to-orange-600"></div>
                   
@@ -186,6 +192,7 @@ export default async function HomePage() {
                     </Link>
                   </div>
                 </div>
+                </ScrollAnimation>
               ))}
             </div>
             
@@ -196,17 +203,20 @@ export default async function HomePage() {
 
           {/* How It Works */}
           <div className="mb-20">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-3 animate-fadeInUp">
-                Cara Pesan Tiket
-              </h2>
-              <p className="text-lg text-gray-600 animate-fadeInUp animation-delay-100">
-                Hanya 4 langkah mudah untuk perjalanan Anda
-              </p>
-            </div>
+            <ScrollAnimation animation="fadeInUp">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-gray-900 mb-3">
+                  Cara Pesan Tiket
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Hanya 4 langkah mudah untuk perjalanan Anda
+                </p>
+              </div>
+            </ScrollAnimation>
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="relative animate-fadeInUp animation-delay-100">
+              <ScrollAnimation animation="slideInLeft" delay={0}>
+                <div className="relative">
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
                     <div className="w-24 h-24 bg-orange-100 flex items-center justify-center mx-auto shadow-lg transform hover:scale-110 transition-transform duration-300">
@@ -227,8 +237,10 @@ export default async function HomePage() {
                   </svg>
                 </div>
               </div>
+              </ScrollAnimation>
 
-              <div className="relative animate-fadeInUp animation-delay-200">
+              <ScrollAnimation animation="fadeInUp" delay={100}>
+              <div className="relative">
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
                     <div className="w-24 h-24 bg-teal-100 flex items-center justify-center mx-auto shadow-lg transform hover:scale-110 transition-transform duration-300">
@@ -249,8 +261,10 @@ export default async function HomePage() {
                   </svg>
                 </div>
               </div>
+              </ScrollAnimation>
 
-              <div className="relative animate-fadeInUp animation-delay-300">
+              <ScrollAnimation animation="fadeInUp" delay={200}>
+              <div className="relative">
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
                     <div className="w-24 h-24 bg-yellow-100 flex items-center justify-center mx-auto shadow-lg transform hover:scale-110 transition-transform duration-300">
@@ -271,8 +285,10 @@ export default async function HomePage() {
                   </svg>
                 </div>
               </div>
+              </ScrollAnimation>
 
-              <div className="animate-fadeInUp animation-delay-400">
+              <ScrollAnimation animation="slideInRight" delay={300}>
+              <div>
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
                     <div className="w-24 h-24 bg-green-100 flex items-center justify-center mx-auto shadow-lg transform hover:scale-110 transition-transform duration-300">
@@ -288,21 +304,25 @@ export default async function HomePage() {
                   <p className="text-gray-600">Dapatkan e-tiket digital dan siap berangkat</p>
                 </div>
               </div>
+              </ScrollAnimation>
             </div>
           </div>
 
           {/* Features */}
           <div className="bg-gray-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-20">
             <div className="max-w-7xl mx-auto">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-gray-900 mb-3 animate-fadeInUp">
-                  Mengapa Memilih Kami
-                </h2>
-                <p className="text-lg text-gray-600 animate-fadeInUp animation-delay-100">Perjalanan yang nyaman dimulai dari sini</p>
-              </div>
+              <ScrollAnimation animation="fadeInUp">
+                <div className="text-center mb-16">
+                  <h2 className="text-4xl font-bold text-gray-900 mb-3">
+                    Mengapa Memilih Kami
+                  </h2>
+                  <p className="text-lg text-gray-600">Perjalanan yang nyaman dimulai dari sini</p>
+                </div>
+              </ScrollAnimation>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div className="text-center group animate-fadeInUp animation-delay-100">
+                <ScrollAnimation animation="fadeInUp" delay={0}>
+                  <div className="text-center group">
                   <div className="w-20 h-20 bg-orange-600 flex items-center justify-center mb-6 mx-auto transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
                     <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -313,8 +333,10 @@ export default async function HomePage() {
                     Booking tiket dalam hitungan menit dengan proses yang mudah dan cepat
                   </p>
                 </div>
+                </ScrollAnimation>
                 
-                <div className="text-center group animate-fadeInUp animation-delay-200">
+                <ScrollAnimation animation="fadeInUp" delay={100}>
+                <div className="text-center group">
                   <div className="w-20 h-20 bg-teal-500 flex items-center justify-center mb-6 mx-auto transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
                     <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
@@ -325,8 +347,10 @@ export default async function HomePage() {
                     Tiket digital praktis yang bisa diakses kapan saja di perangkat Anda
                   </p>
                 </div>
+                </ScrollAnimation>
                 
-                <div className="text-center group animate-fadeInUp animation-delay-300">
+                <ScrollAnimation animation="fadeInUp" delay={200}>
+                <div className="text-center group">
                   <div className="w-20 h-20 bg-yellow-500 flex items-center justify-center mb-6 mx-auto transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
                     <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -337,23 +361,27 @@ export default async function HomePage() {
                     Transaksi terlindungi dengan sistem pembayaran yang aman dan terpercaya
                   </p>
                 </div>
+                </ScrollAnimation>
               </div>
             </div>
           </div>
 
           {/* Testimonials */}
           <div className="py-20">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-3 animate-fadeInUp">
-                Kata Mereka
-              </h2>
-              <p className="text-lg text-gray-600 animate-fadeInUp animation-delay-100">
-                Pengalaman pengguna Jalan Terus
-              </p>
-            </div>
+            <ScrollAnimation animation="fadeInUp">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-gray-900 mb-3">
+                  Kata Mereka
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Pengalaman pengguna Jalan Terus
+                </p>
+              </div>
+            </ScrollAnimation>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fadeInUp animation-delay-100 border-t-4 border-orange-600">
+              <ScrollAnimation animation="slideInLeft" delay={0}>
+              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-t-4 border-orange-600">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-orange-600 text-white flex items-center justify-center font-bold text-xl mr-4">
                     A
@@ -374,8 +402,10 @@ export default async function HomePage() {
                   "Pelayanan sangat memuaskan! Proses booking mudah dan cepat. Bus nyaman dan tepat waktu."
                 </p>
               </div>
+              </ScrollAnimation>
 
-              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fadeInUp animation-delay-200 border-t-4 border-teal-500">
+              <ScrollAnimation animation="fadeInUp" delay={100}>
+              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-t-4 border-teal-500">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-teal-500 text-white flex items-center justify-center font-bold text-xl mr-4">
                     S
@@ -396,8 +426,10 @@ export default async function HomePage() {
                   "E-tiket digital sangat praktis. Tidak perlu repot print tiket. Recommended banget!"
                 </p>
               </div>
+              </ScrollAnimation>
 
-              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fadeInUp animation-delay-300 border-t-4 border-yellow-500">
+              <ScrollAnimation animation="slideInRight" delay={200}>
+              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-t-4 border-yellow-500">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-yellow-500 text-white flex items-center justify-center font-bold text-xl mr-4">
                     B
@@ -418,6 +450,7 @@ export default async function HomePage() {
                   "Harga terjangkau, pilihan bus banyak. Pasti akan pakai lagi untuk perjalanan selanjutnya!"
                 </p>
               </div>
+              </ScrollAnimation>
             </div>
           </div>
 

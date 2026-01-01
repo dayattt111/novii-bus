@@ -199,7 +199,7 @@ export async function getPopularRoutes() {
   return routes.map((route) => {
     const availableBuses = route.buses.filter((bus) => bus.seats.length > 0)
     const minPrice = availableBuses.length > 0
-      ? Math.min(...availableBuses.map((bus) => bus.harga))
+      ? Math.min(...availableBuses.flatMap((bus) => bus.seats.map(seat => seat.harga)))
       : 0
 
     return {
