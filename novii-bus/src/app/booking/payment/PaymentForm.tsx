@@ -224,7 +224,7 @@ export default function PaymentForm({
                   <div className="bg-white rounded-lg p-6 flex flex-col items-center">
                     <div className="w-48 h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center mb-4">
                       <div className="text-center">
-                        <div className="text-6xl mb-2">📱</div>
+                        {/* <div className="text-6xl mb-2">📱</div> */}
                         <p className="text-sm font-medium text-gray-700">QR Code QRIS</p>
                       </div>
                     </div>
