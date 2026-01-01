@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
 import { prisma } from './prisma'
 
 const SESSION_COOKIE_NAME = 'temanbus_session'
@@ -23,7 +24,8 @@ export async function createSession(userId: string) {
   })
 }
 
-export async function getSession() {
+// Cache getSession untuk menghindari duplikasi query dalam satu request
+export const getSession = cache(async () => {
   const cookieStore = await cookies()
   const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)
   
@@ -41,7 +43,7 @@ export async function getSession() {
   })
 
   return user
-}
+})
 
 export async function destroySession() {
   const cookieStore = await cookies()

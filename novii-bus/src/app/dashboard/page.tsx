@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
-import NavbarWithAuth from '@/components/NavbarWithAuth'
+import Navbar from '@/components/Navbar'
 import DashboardForm from './DashboardForm'
+
+export const revalidate = 60 // Cache halaman selama 60 detik
 
 export default async function DashboardPage() {
   const user = await getSession()
@@ -12,7 +14,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavbarWithAuth />
+      <Navbar user={user} />
       <DashboardForm />
     </div>
   )
