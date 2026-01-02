@@ -66,8 +66,11 @@ export default function BusSelectionForm({ from, to, date }: Props) {
   const router = useRouter()
   const [routes, setRoutes] = useState<Route[]>([])
   const [selectedRoute, setSelectedRoute] = useState<string>('')
-  const [buses, setBuses] = useState<Bus[]>([])
+  const [availableBuses, setAvailableBuses] = useState<Bus[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Semua tipe bus yang akan selalu ditampilkan
+  const ALL_BUS_TYPES = ['Business Class', 'High Class', 'Sleeper Class']
 
   useEffect(() => {
     if (from && to) {
@@ -84,13 +87,25 @@ export default function BusSelectionForm({ from, to, date }: Props) {
   useEffect(() => {
     if (selectedRoute) {
       getBusesByRoute(selectedRoute).then((data: any) => {
-        setBuses(data as any)
+        setAvailableBuses(data as any)
       })
     }
   }, [selectedRoute])
 
   const handleSelectBus = (busId: string) => {
     router.push(`/booking/seat?busId=${busId}&date=${date}`)
+  }
+
+  // Fungsi untuk cek apakah tipe bus tersedia
+  const getBusInfo = (busType: string) => {
+    return availableBuses.find(bus => bus.tipe === busType)
+  }
+
+  // Fungsi untuk cek apakah bus penuh (semua kursi sudah booked)
+  const isBusFull = (bus: Bus | undefined) => {
+    if (!bus || !bus.seats || bus.seats.length === 0) return true
+    // Jika tidak ada kursi atau semua kursi booked, berarti penuh
+    return false // Nanti bisa ditambahkan logic untuk cek isBooked
   }
 
   if (loading) {
@@ -153,110 +168,122 @@ export default function BusSelectionForm({ from, to, date }: Props) {
 
         {/* Bus Cards Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {buses.length === 0 ? (
-            <div className="col-span-full bg-white rounded-3xl shadow-xl p-12 text-center border-2 border-gray-200">
-              <div className="text-8xl mb-6">🚌</div>
-              <p className="text-xl text-gray-600 font-semibold mb-2">Tidak ada bus tersedia</p>
-              <p className="text-gray-500">Silakan pilih rute atau tanggal lain</p>
-            </div>
-          ) : (
-            buses.map((bus) => {
-              const busConfig = BUS_TYPES[bus.tipe as keyof typeof BUS_TYPES] || BUS_TYPES['Business Class']
-              const price = bus.seats[0]?.harga || busConfig.basePrice
-              const borderColor = busConfig.color === 'orange' ? 'border-orange-300' : busConfig.color === 'blue' ? 'border-blue-300' : 'border-purple-300'
-              const badgeColor = busConfig.color === 'orange' ? 'bg-orange-500' : busConfig.color === 'blue' ? 'bg-blue-500' : 'bg-purple-500'
-              
-              return (
-                <div
-                  key={bus.id}
-                  className={`bg-white rounded-3xl shadow-lg overflow-hidden border-2 ${borderColor} hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative`}
-                >
-                  {/* Badge */}
-                  <div className={`absolute top-4 right-4 ${badgeColor} text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10`}>
-                    {busConfig.badge}
-                  </div>
+          {ALL_BUS_TYPES.map((busType) => {
+            const busConfig = BUS_TYPES[busType as keyof typeof BUS_TYPES]
+            const busInfo = getBusInfo(busType)
+            const isAvailable = !!busInfo && !isBusFull(busInfo)
+            const price = busInfo?.seats[0]?.harga || busConfig.basePrice
+            const borderColor = busConfig.color === 'orange' ? 'border-orange-300' : busConfig.color === 'blue' ? 'border-blue-300' : 'border-purple-300'
+            const badgeColor = busConfig.color === 'orange' ? 'bg-orange-500' : busConfig.color === 'blue' ? 'bg-blue-500' : 'bg-purple-500'
+            
+            return (
+              <div
+                key={busType}
+                className={`bg-white rounded-3xl shadow-lg overflow-hidden border-2 ${borderColor} transition-all duration-300 relative ${
+                  isAvailable ? 'hover:shadow-2xl hover:-translate-y-2' : 'opacity-75'
+                }`}
+              >
+                {/* Badge */}
+                <div className={`absolute top-4 right-4 ${badgeColor} text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10`}>
+                  {busConfig.badge}
+                </div>
 
-                  {/* Bus Image */}
-                  <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
-                    {bus.imageUrl || busConfig.defaultImage ? (
-                      <Image
-                        src={bus.imageUrl || busConfig.defaultImage}
-                        alt={bus.tipe}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-7xl">
-                        {busConfig.icon}
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <h3 className="text-2xl font-black drop-shadow-lg">
-                        {bus.tipe}
-                      </h3>
+                {/* Sold Out Badge */}
+                {!isAvailable && (
+                  <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-10">
+                    Penuh
+                  </div>
+                )}
+
+                {/* Bus Image */}
+                <div className={`h-48 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden ${!isAvailable ? 'grayscale' : ''}`}>
+                  {busInfo?.imageUrl || busConfig.defaultImage ? (
+                    <Image
+                      src={busInfo?.imageUrl || busConfig.defaultImage}
+                      alt={busType}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-7xl">
+                      {busConfig.icon}
                     </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="text-2xl font-black drop-shadow-lg">
+                      {busType}
+                    </h3>
                   </div>
+                </div>
 
-                  {/* Bus Details */}
-                  <div className="p-6">
-                    {/* Description */}
-                    <p className="text-sm text-gray-600 leading-relaxed mb-4 h-16">
-                      {busConfig.description}
+                {/* Bus Details */}
+                <div className="p-6">
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 leading-relaxed mb-4 h-16">
+                    {busConfig.description}
+                  </p>
+
+                  {/* Facilities */}
+                  <div className="mb-4">
+                    <p className="text-xs font-bold text-gray-700 uppercase mb-2 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Fasilitas
                     </p>
+                    <div className="flex flex-wrap gap-2">
+                      {busConfig.facilities.map((facility, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full border border-gray-200"
+                        >
+                          {facility}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-                    {/* Facilities */}
-                    <div className="mb-4">
-                      <p className="text-xs font-bold text-gray-700 uppercase mb-2 flex items-center gap-2">
-                        <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Fasilitas
+                  {/* Time and Price */}
+                  <div className="flex items-center justify-between mb-4 pt-4 border-t border-gray-200">
+                    <div className="flex items-center gap-2 text-sm text-gray-700">
+                      <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="font-bold">{busConfig.time}</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 mb-1">Mulai dari</p>
+                      <p className="text-2xl font-black text-orange-600">
+                        {(price / 1000).toFixed(0)}K
                       </p>
-                      <div className="flex flex-wrap gap-2">
-                        {busConfig.facilities.map((facility, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full border border-gray-200"
-                          >
-                            {facility}
-                          </span>
-                        ))}
-                      </div>
                     </div>
+                  </div>
 
-                    {/* Time and Price */}
-                    <div className="flex items-center justify-between mb-4 pt-4 border-t border-gray-200">
-                      <div className="flex items-center gap-2 text-sm text-gray-700">
-                        <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span className="font-bold">{busConfig.time}</span>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-500 mb-1">Mulai dari</p>
-                        <p className="text-2xl font-black text-orange-600">
-                          {(price / 1000).toFixed(0)}K
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Select Button */}
+                  {/* Select Button */}
+                  {isAvailable ? (
                     <button
-                      onClick={() => handleSelectBus(bus.id)}
+                      onClick={() => handleSelectBus(busInfo!.id)}
                       className={`w-full ${badgeColor} text-white font-bold py-4 rounded-xl hover:opacity-90 transition-all active:scale-95 transform shadow-lg`}
                     >
                       Pilih Bus Ini
                     </button>
-                  </div>
+                  ) : (
+                    <button
+                      disabled
+                      className="w-full bg-gray-300 text-gray-500 font-bold py-4 rounded-xl cursor-not-allowed"
+                    >
+                      {busInfo ? 'Bus Penuh' : 'Tidak Tersedia'}
+                    </button>
+                  )}
                 </div>
-              )
-            })
-          )}
+              </div>
+            )
+          })}
         </div>
 
         {/* Info Section */}
-        {buses.length > 0 && (
+        {availableBuses.length > 0 && (
           <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-8 text-white text-center shadow-xl mb-6">
             <h3 className="text-2xl font-bold mb-3">🎯 Tips Memilih Bus</h3>
             <p className="text-orange-100 max-w-3xl mx-auto">

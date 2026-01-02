@@ -109,15 +109,10 @@ async function main() {
 
   console.log(`🚌 Creating buses and seats...`)
 
-  // Untuk setiap route, buat 1-2 bus
+  // Untuk setiap route, buat SEMUA 3 tipe bus (Business, High, Sleeper)
   for (const route of allRoutes) {
-    // Pilih 1-2 tipe bus
-    const numBuses = Math.random() > 0.5 ? 2 : 1
-    const selectedTypes = busTypes.slice(0, numBuses)
-
-    for (let i = 0; i < selectedTypes.length; i++) {
-      const busType = selectedTypes[i]
-      
+    // Buat bus untuk SEMUA tipe (3 bus per route)
+    for (const busType of busTypes) {
       const createdBus = await prisma.bus.create({
         data: {
           routeId: route.id,
@@ -152,8 +147,8 @@ async function main() {
       })
     }
 
-    // Progress log setiap 10 routes
-    if (busCount % 20 === 0) {
+    // Progress log setiap 20 buses
+    if (busCount % 30 === 0) {
       console.log(`   Progress: ${busCount} buses created...`)
     }
   }
