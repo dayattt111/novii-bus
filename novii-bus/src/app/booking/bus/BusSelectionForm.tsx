@@ -36,7 +36,7 @@ const BUS_TYPES = {
     icon: '🚌',
     time: '19:30 WITA',
     basePrice: 200000,
-    defaultImage: '/image/bus.jpeg'
+    defaultImage: '/image/bus1.jpg'
   },
   'High Class': {
     description: 'Rasakan kenyamanan kursi empuk dengan daya rebah dalam, jarak kursi yang lebih luas, selimut, bantal, dan Port USB.',
@@ -44,7 +44,7 @@ const BUS_TYPES = {
     icon: '🚍',
     time: '19:45 WITA',
     basePrice: 250000,
-    defaultImage: '/image/bus.jpeg'
+    defaultImage: '/image/bus2.jpg'
   },
   'Sleeper Class': {
     description: 'Rasakan kenyamanan maksimal dengan kabin tidur privat yang dilengkapi selimut, bantal, dan tirai, serta Port USB dan TV pribadi di setiap kapsul.',
@@ -52,7 +52,7 @@ const BUS_TYPES = {
     icon: '🛏️',
     time: '20:00 WITA',
     basePrice: 350000,
-    defaultImage: '/image/bus.jpeg'
+    defaultImage: '/image/bus3.jpg'
   }
 }
 
