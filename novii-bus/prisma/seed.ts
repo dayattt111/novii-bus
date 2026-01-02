@@ -85,24 +85,22 @@ async function main() {
   // Tipe bus dengan konfigurasi
   const busTypes = [
     { 
-      tipe: 'Ekonomi', 
-      seats: { rows: 10, columns: 4 }, 
-      priceMultiplier: 1.0 
+      tipe: 'Business Class', 
+      seats: { rows: 9, columns: 4 }, 
+      priceMultiplier: 1.0,
+      imageUrl: '/image/bus.jpeg' // Default image
     },
     { 
-      tipe: 'Bisnis', 
-      seats: { rows: 8, columns: 3 }, 
-      priceMultiplier: 1.5 
+      tipe: 'High Class', 
+      seats: { rows: 8, columns: 4 }, 
+      priceMultiplier: 1.5,
+      imageUrl: '/image/bus.jpeg'
     },
     { 
-      tipe: 'Eksekutif', 
-      seats: { rows: 6, columns: 3 }, 
-      priceMultiplier: 2.0 
-    },
-    { 
-      tipe: 'Sleeper', 
-      seats: { rows: 5, columns: 2 }, 
-      priceMultiplier: 2.5 
+      tipe: 'Sleeper Class', 
+      seats: { rows: 6, columns: 4 }, 
+      priceMultiplier: 2.0,
+      imageUrl: '/image/bus.jpeg'
     },
   ]
 
@@ -125,7 +123,7 @@ async function main() {
           routeId: route.id,
           tipe: busType.tipe,
           nama: `${busType.tipe} ${route.kotaAsal}-${route.kotaTujuan}`,
-          imageUrl: null,
+          imageUrl: busType.imageUrl, // Set default image
         },
       })
 

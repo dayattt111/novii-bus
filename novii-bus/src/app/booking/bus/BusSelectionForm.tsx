@@ -35,21 +35,24 @@ const BUS_TYPES = {
     facilities: ['Kursi Empuk', 'AC', 'Port USB', 'WiFi'],
     icon: '🚌',
     time: '19:30 WITA',
-    basePrice: 200000
+    basePrice: 200000,
+    defaultImage: '/image/bus.jpeg'
   },
   'High Class': {
     description: 'Rasakan kenyamanan kursi empuk dengan daya rebah dalam, jarak kursi yang lebih luas, selimut, bantal, dan Port USB.',
     facilities: ['Kursi Premium', 'AC', 'Selimut', 'Bantal', 'Port USB', 'WiFi'],
     icon: '🚍',
     time: '19:45 WITA',
-    basePrice: 250000
+    basePrice: 250000,
+    defaultImage: '/image/bus.jpeg'
   },
   'Sleeper Class': {
     description: 'Rasakan kenyamanan maksimal dengan kabin tidur privat yang dilengkapi selimut, bantal, dan tirai, serta Port USB dan TV pribadi di setiap kapsul.',
     facilities: ['Kabin Tidur Privat', 'Selimut Premium', 'Bantal', 'Tirai', 'Port USB', 'TV Pribadi'],
     icon: '🛏️',
     time: '20:00 WITA',
-    basePrice: 350000
+    basePrice: 350000,
+    defaultImage: '/image/bus.jpeg'
   }
 }
 
@@ -143,9 +146,9 @@ export default function BusSelectionForm({ from, to, date }: Props) {
                     <div className="flex gap-4">
                       {/* Bus Image */}
                       <div className="w-24 h-24 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl overflow-hidden relative">
-                        {bus.imageUrl ? (
+                        {bus.imageUrl || busConfig.defaultImage ? (
                           <Image
-                            src={bus.imageUrl}
+                            src={bus.imageUrl || busConfig.defaultImage}
                             alt={bus.tipe}
                             fill
                             className="object-cover"
