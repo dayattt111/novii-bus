@@ -88,19 +88,19 @@ async function main() {
       tipe: 'Business Class', 
       seats: { rows: 9, columns: 4 }, 
       priceMultiplier: 1.0,
-      imageUrl: '/image/bus.jpeg' // Default image
+      imageUrl: '/image/bus1.jpg' // Default image
     },
     { 
       tipe: 'High Class', 
       seats: { rows: 8, columns: 4 }, 
       priceMultiplier: 1.5,
-      imageUrl: '/image/bus.jpeg'
+      imageUrl: '/image/bus2.jpg'
     },
     { 
       tipe: 'Sleeper Class', 
       seats: { rows: 6, columns: 4 }, 
       priceMultiplier: 2.0,
-      imageUrl: '/image/bus.jpeg'
+      imageUrl: '/image/bus3.jpg'
     },
   ]
 
