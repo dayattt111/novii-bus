@@ -20,7 +20,7 @@ export default function SeatSelectionForm({ busId, date }: Props) {
   const router = useRouter()
   const [seats, setSeats] = useState<Seat[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([])
+  const [selectedSeat, setSelectedSeat] = useState<string>('')
 
   useEffect(() => {
     if (busId) {
@@ -34,16 +34,15 @@ export default function SeatSelectionForm({ busId, date }: Props) {
   const toggleSeat = (seatId: string, isBooked: boolean) => {
     if (isBooked) return
     
-    if (selectedSeats.includes(seatId)) {
-      setSelectedSeats(selectedSeats.filter(id => id !== seatId))
+    if (selectedSeat === seatId) {
+      setSelectedSeat('')
     } else {
-      // Hanya boleh pilih 1 kursi
-      setSelectedSeats([seatId])
+      setSelectedSeat(seatId)
     }
   }
 
   const handleContinue = () => {
-    if (selectedSeats.length === 0) {
+    if (!selectedSeat) {
       alert('Pilih kursi terlebih dahulu')
       return
     }
@@ -54,105 +53,277 @@ export default function SeatSelectionForm({ busId, date }: Props) {
       return
     }
     
-    const selectedSeat = seats.find(s => s.id === selectedSeats[0])
-    router.push(`/booking/biodata?busId=${busId}&seatId=${selectedSeats[0]}&harga=${selectedSeat?.harga}&date=${date}`)
+    const seat = seats.find(s => s.id === selectedSeat)
+    router.push(`/booking/biodata?busId=${busId}&seatId=${selectedSeat}&harga=${seat?.harga}&date=${date}`)
   }
 
-  const totalHarga = selectedSeats.reduce((sum, seatId) => {
-    const seat = seats.find(s => s.id === seatId)
-    return sum + (seat?.harga || 0)
-  }, 0)
+  const getSeatByNumber = (num: string) => {
+    return seats.find(s => s.nomorKursi === num)
+  }
+
+  const renderSeat = (num: string, position: 'left' | 'right') => {
+    const seat = getSeatByNumber(num)
+    if (!seat) return <div className="w-14 h-14"></div>
+
+    const isSelected = selectedSeat === seat.id
+    const isBooked = seat.isBooked
+
+    return (
+      <button
+        onClick={() => toggleSeat(seat.id, isBooked)}
+        disabled={isBooked}
+        className={`w-14 h-14 rounded-lg border-2 font-bold text-sm transition-all ${
+          isBooked
+            ? 'bg-gray-300 border-gray-400 text-gray-500 cursor-not-allowed'
+            : isSelected
+            ? 'bg-orange-500 border-orange-600 text-white shadow-lg scale-110'
+            : 'bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:bg-orange-50'
+        }`}
+      >
+        {num}
+      </button>
+    )
+  }
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20">Loading...</div>
-  }
-
-  return (
-    <main className="max-w-4xl mx-auto px-4 py-8 pb-20">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          Pilih Kursi
-        </h2>
-        <p className="text-gray-600">
-          Pilih kursi yang Anda inginkan
-        </p>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">
-          Denah Kursi
-        </h3>
-
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="py-3 px-4 text-left font-medium text-gray-700">Nomor Kursi</th>
-                <th className="py-3 px-4 text-right font-medium text-gray-700">Harga</th>
-              </tr>
-            </thead>
-            <tbody>
-              {seats.map((seat) => (
-                <tr 
-                  key={seat.id}
-                  onClick={() => toggleSeat(seat.id, seat.isBooked)}
-                  className={`border-b cursor-pointer transition ${
-                    seat.isBooked
-                      ? 'bg-gray-100 cursor-not-allowed'
-                      : selectedSeats.includes(seat.id)
-                      ? 'bg-orange-50 hover:bg-orange-100'
-                      : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <td className="py-4 px-4">
-                    <div className="flex items-center space-x-3">
-                      <div 
-                        className={`w-10 h-10 rounded flex items-center justify-center font-semibold ${
-                          seat.isBooked
-                            ? 'bg-gray-300 text-gray-600'
-                            : selectedSeats.includes(seat.id)
-                            ? 'bg-orange-500 text-white'
-                            : 'bg-blue-100 text-blue-700'
-                        }`}
-                      >
-                        {seat.nomorKursi}
-                      </div>
-                      {seat.isBooked && (
-                        <span className="text-sm text-gray-500">Sudah Terisi</span>
-                      )}
-                      {selectedSeats.includes(seat.id) && (
-                        <span className="text-sm text-orange-600 font-medium">Dipilih</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-4 px-4 text-right font-semibold text-gray-900">
-                    Rp {seat.harga.toLocaleString('id-ID')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-white">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Memuat kursi tersedia...</p>
         </div>
       </div>
+    )
+  }
 
-      <div className="bg-white rounded-lg shadow-md p-6 sticky bottom-4">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <p className="text-sm text-gray-600">Total Harga</p>
-            <p className="text-2xl font-bold text-gray-900">
-              Rp {totalHarga.toLocaleString('id-ID')}
-            </p>
+  const selectedSeatData = seats.find(s => s.id === selectedSeat)
+
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">💺</span>
+            </div>
+            <h1 className="text-3xl font-black text-gray-900">Pilih Kursi</h1>
           </div>
+          <p className="text-gray-600 font-medium">
+            Pilih kursi favorit Anda untuk perjalanan yang nyaman
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Bus Layout */}
+          <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-200">
+            <div className="mb-6 text-center">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Layout Bus</h3>
+              <p className="text-sm text-gray-600">METRO PERMAI</p>
+            </div>
+
+            <div className="bg-gray-50 rounded-2xl p-6 border-2 border-gray-300">
+              {/* Driver Section */}
+              <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-dashed border-gray-300">
+                <div className="text-left">
+                  <p className="text-xs font-bold text-gray-500 mb-1">PINTU</p>
+                  <div className="flex gap-2">
+                    <div className="w-10 h-6 bg-gray-400 rounded flex items-center justify-center text-white text-xs font-bold">B</div>
+                    <div className="w-10 h-6 bg-gray-400 rounded flex items-center justify-center text-white text-xs font-bold">A</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="w-12 h-12 border-2 border-gray-400 rounded-full flex items-center justify-center mb-1">
+                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                  </div>
+                  <p className="text-xs font-bold text-gray-500">SOPIR</p>
+                </div>
+              </div>
+
+              {/* Seats Layout */}
+              <div className="space-y-3">
+                {/* Row 1 */}
+                <div className="flex justify-between gap-4">
+                  <div className="flex gap-2">
+                    {renderSeat('1', 'left')}
+                    {renderSeat('2', 'left')}
+                  </div>
+                  <div className="flex gap-2">
+                    {renderSeat('3', 'right')}
+                    {renderSeat('4', 'right')}
+                  </div>
+                </div>
+
+                {/* Row 2 */}
+                <div className="flex justify-between gap-4">
+                  <div className="flex gap-2">
+                    {renderSeat('8', 'left')}
+                    {renderSeat('7', 'left')}
+                  </div>
+                  <div className="flex gap-2">
+                    {renderSeat('6', 'right')}
+                    {renderSeat('5', 'right')}
+                  </div>
+                </div>
+
+                {/* Row 3 */}
+                <div className="flex justify-between gap-4">
+                  <div className="flex gap-2">
+                    {renderSeat('9', 'left')}
+                    {renderSeat('10', 'left')}
+                  </div>
+                  <div className="flex gap-2">
+                    {renderSeat('11', 'right')}
+                    {renderSeat('12', 'right')}
+                  </div>
+                </div>
+
+                {/* Row 4 */}
+                <div className="flex justify-between gap-4">
+                  <div className="flex gap-2">
+                    {renderSeat('16', 'left')}
+                    {renderSeat('15', 'left')}
+                  </div>
+                  <div className="flex gap-2">
+                    {renderSeat('14', 'right')}
+                    {renderSeat('13', 'right')}
+                  </div>
+                </div>
+
+                {/* Row 5 */}
+                <div className="flex justify-between gap-4">
+                  <div className="flex gap-2">
+                    {renderSeat('17', 'left')}
+                    {renderSeat('18', 'left')}
+                  </div>
+                  <div className="flex gap-2">
+                    {renderSeat('19', 'right')}
+                    {renderSeat('20', 'right')}
+                  </div>
+                </div>
+
+                {/* Row 6 */}
+                <div className="flex justify-between gap-4">
+                  <div className="flex gap-2">
+                    {renderSeat('24', 'left')}
+                    {renderSeat('23', 'left')}
+                  </div>
+                  <div className="flex gap-2">
+                    {renderSeat('22', 'right')}
+                    {renderSeat('21', 'right')}
+                  </div>
+                </div>
+
+                {/* Row 7 */}
+                <div className="flex justify-between gap-4">
+                  <div className="flex gap-2">
+                    {renderSeat('25', 'left')}
+                    {renderSeat('26', 'left')}
+                  </div>
+                  <div className="flex gap-2">
+                    {renderSeat('27', 'right')}
+                    {renderSeat('28', 'right')}
+                  </div>
+                </div>
+
+                {/* Row 8 - Back Door */}
+                <div className="border-t-2 border-dashed border-gray-300 pt-3">
+                  <p className="text-xs font-bold text-gray-500 text-center mb-2">PINTU</p>
+                  <div className="flex justify-between gap-4">
+                    <div className="flex gap-2">
+                      {renderSeat('32', 'left')}
+                      {renderSeat('31', 'left')}
+                    </div>
+                    <div className="flex gap-2">
+                      {renderSeat('30', 'right')}
+                      {renderSeat('29', 'right')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="mt-6 flex items-center justify-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-white border-2 border-gray-300 rounded"></div>
+                <span className="text-gray-600">Tersedia</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-orange-500 border-2 border-orange-600 rounded"></div>
+                <span className="text-gray-600">Dipilih</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gray-300 border-2 border-gray-400 rounded"></div>
+                <span className="text-gray-600">Terisi</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Booking Summary */}
+          <div>
+            <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-orange-200 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Detail Pemesanan</h3>
+              
+              {selectedSeatData ? (
+                <div className="space-y-4">
+                  <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4">
+                    <p className="text-sm text-gray-600 mb-1">Kursi Terpilih</p>
+                    <p className="text-3xl font-black text-orange-600">
+                      No. {selectedSeatData.nomorKursi}
+                    </p>
+                  </div>
+
+                  <div className="border-t-2 border-dashed border-gray-300 pt-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-600">Harga Tiket</span>
+                      <span className="text-lg font-bold text-gray-900">
+                        Rp {selectedSeatData.harga.toLocaleString('id-ID')}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleContinue}
+                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold py-4 rounded-xl hover:shadow-lg transition-all active:scale-95"
+                  >
+                    Lanjutkan ke Data Pemesan
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">💺</div>
+                  <p className="text-gray-500 font-medium">Silakan pilih kursi terlebih dahulu</p>
+                </div>
+              )}
+            </div>
+
+            {/* Tips */}
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
+              <h4 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Tips Memilih Kursi
+              </h4>
+              <ul className="text-sm text-blue-800 space-y-2">
+                <li>• Kursi depan lebih dekat dengan AC</li>
+                <li>• Kursi tengah lebih minim guncangan</li>
+                <li>• Kursi belakang lebih leluasa untuk rebahan</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Back Button */}
+        <div className="mt-8 text-center">
           <button
-            onClick={handleContinue}
-            disabled={selectedSeats.length === 0}
-            className={`px-8 py-3 rounded-full font-semibold transition ${
-              selectedSeats.length > 0
-                ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:shadow-lg'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+            onClick={() => router.back()}
+            className="bg-white border-2 border-gray-300 text-gray-700 font-bold px-8 py-3 rounded-xl hover:bg-gray-50 transition-colors"
           >
-            Lanjutkan
+            ← Kembali Pilih Bus
           </button>
         </div>
       </div>
