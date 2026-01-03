@@ -124,21 +124,20 @@ async function main() {
 
       busCount++
 
-      // Buat Seats
+      // Buat Seats dengan nomor kursi sesuai layout bus (1-32)
       const seats = []
-      const seatLetters = ['A', 'B', 'C', 'D'].slice(0, busType.seats.columns)
-      const seatPrice = Math.round(route.harga * busType.priceMultiplier / (busType.seats.rows * busType.seats.columns))
+      const seatPrice = Math.round(route.harga * busType.priceMultiplier / 32) // 32 kursi per bus
 
-      for (const letter of seatLetters) {
-        for (let row = 1; row <= busType.seats.rows; row++) {
-          seats.push({
-            busId: createdBus.id,
-            nomorKursi: `${letter}${row}`,
-            harga: seatPrice,
-            isBooked: false,
-          })
-          seatCount++
-        }
+      // Layout kursi bus standard: 32 kursi
+      // Sesuai dengan gambar Metro Permai
+      for (let seatNum = 1; seatNum <= 32; seatNum++) {
+        seats.push({
+          busId: createdBus.id,
+          nomorKursi: String(seatNum),
+          harga: seatPrice,
+          isBooked: false,
+        })
+        seatCount++
       }
 
       // Bulk insert seats
