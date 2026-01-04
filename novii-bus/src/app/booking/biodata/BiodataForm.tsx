@@ -5,13 +5,14 @@ import Link from 'next/link'
 
 type Props = {
   busId: string
-  seatId: string
+  seatIds: string
   harga: string
   date: string
 }
 
-export default function BiodataForm({ busId, seatId, harga, date }: Props) {
+export default function BiodataForm({ busId, seatIds, harga, date }: Props) {
   const router = useRouter()
+  const seatCount = seatIds ? seatIds.split(',').length : 0
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -31,7 +32,7 @@ export default function BiodataForm({ busId, seatId, harga, date }: Props) {
     // Navigate ke halaman payment dengan data
     const params = new URLSearchParams({
       busId: busId || '',
-      seatId: seatId || '',
+      seatIds: seatIds || '',
       harga: harga || '',
       date: date,
       namaPenumpang: namaPenumpang as string,
@@ -50,7 +51,7 @@ export default function BiodataForm({ busId, seatId, harga, date }: Props) {
           Data Penumpang
         </h2>
         <p className="text-gray-600">
-          Masukkan data penumpang dengan benar
+          {seatCount > 1 ? `Masukkan data untuk ${seatCount} penumpang` : 'Masukkan data penumpang dengan benar'}
         </p>
       </div>
 

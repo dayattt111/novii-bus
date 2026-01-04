@@ -10,6 +10,7 @@ type Route = {
   kotaAsal: string
   kotaTujuan: string
   harga: number
+  durasi: string
 }
 
 type Bus = {
@@ -143,7 +144,7 @@ export default function BusSelectionForm({ from, to, date }: Props) {
                 <span className="font-semibold">{new Date(date).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</span>
               </div>
             </div>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 mb-3">
               <div className="text-center">
                 <p className="text-2xl font-bold text-gray-900">{from}</p>
                 <p className="text-xs text-gray-500 uppercase">Keberangkatan</p>
@@ -156,6 +157,18 @@ export default function BusSelectionForm({ from, to, date }: Props) {
                 <p className="text-xs text-gray-500 uppercase">Tujuan</p>
               </div>
             </div>
+            {selectedRoute && routes.length > 0 && (
+              <div className="text-center">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-50 to-yellow-50 px-4 py-2 rounded-full border border-orange-200">
+                  <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-sm font-semibold text-gray-700">
+                    Estimasi Perjalanan: <span className="text-orange-600">{routes.find(r => r.id === selectedRoute)?.durasi || '8 jam'}</span>
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mb-6">

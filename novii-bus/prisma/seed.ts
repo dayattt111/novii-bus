@@ -27,18 +27,23 @@ async function main() {
   // Generate rute populer (tidak semua kombinasi)
   const popularRoutes = []
   
-  // Dari Makassar ke semua kota
+  // Dari Makassar ke semua kota dengan estimasi durasi
   for (let i = 1; i < cities.length; i++) {
+    const distance = i * 50 // km estimasi
+    const duration = Math.ceil(distance / 60) // jam (kecepatan rata-rata 60km/jam)
+    
     popularRoutes.push({
       kotaAsal: 'Makassar',
       kotaTujuan: cities[i],
-      harga: 100000 + (i * 25000)
+      harga: 100000 + (i * 25000),
+      durasi: `${duration} jam`
     })
     // Rute balik
     popularRoutes.push({
       kotaAsal: cities[i],
       kotaTujuan: 'Makassar',
-      harga: 100000 + (i * 25000)
+      harga: 100000 + (i * 25000),
+      durasi: `${duration} jam`
     })
   }
 
@@ -48,16 +53,19 @@ async function main() {
     for (let j = i + 1; j < majorCities.length; j++) {
       const distance = Math.abs(i - j)
       const harga = 150000 + (distance * 30000)
+      const duration = Math.ceil((distance + 3) * 50 / 60)
       
       popularRoutes.push({
         kotaAsal: majorCities[i],
         kotaTujuan: majorCities[j],
-        harga: harga
+        harga: harga,
+        durasi: `${duration} jam`
       })
       popularRoutes.push({
         kotaAsal: majorCities[j],
         kotaTujuan: majorCities[i],
-        harga: harga
+        harga: harga,
+        durasi: `${duration} jam`
       })
     }
   }
@@ -86,20 +94,23 @@ async function main() {
   const busTypes = [
     { 
       tipe: 'Business Class', 
-      seats: { rows: 9, columns: 4 }, 
+      seats: 32, // 32 kursi biasa (1-32)
+      layout: 'single', // Single level
       priceMultiplier: 1.0,
-      imageUrl: '/image/bus1.jpg' // Default image
+      imageUrl: '/image/bus1.jpg'
     },
     { 
       tipe: 'High Class', 
-      seats: { rows: 8, columns: 4 }, 
-      priceMultiplier: 1.5,
+      seats: 32, // 32 kursi premium (1-32)
+      layout: 'single',
+      priceMultiplier: 1.25,
       imageUrl: '/image/bus2.jpg'
     },
     { 
       tipe: 'Sleeper Class', 
-      seats: { rows: 6, columns: 4 }, 
-      priceMultiplier: 2.0,
+      seats: 32, // 16 lower (A1-A16) + 16 upper (B1-B16)
+      layout: 'double', // Double decker / bertingkat
+      priceMultiplier: 1.75,
       imageUrl: '/image/bus3.jpg'
     },
   ]
@@ -118,26 +129,48 @@ async function main() {
           routeId: route.id,
           tipe: busType.tipe,
           nama: `${busType.tipe} ${route.kotaAsal}-${route.kotaTujuan}`,
-          imageUrl: busType.imageUrl, // Set default image
+          imageUrl: busType.imageUrl,
         },
       })
 
       busCount++
 
-      // Buat Seats dengan nomor kursi sesuai layout bus (1-32)
-      const seats = []
-      const seatPrice = Math.round(route.harga * busType.priceMultiplier / 32) // 32 kursi per bus
+      // Harga per kursi sama untuk semua kursi di bus yang sama
+      const baseSeatPrice = Math.round(route.harga * busType.priceMultiplier)
 
-      // Layout kursi bus standard: 32 kursi
-      // Sesuai dengan gambar Metro Permai
-      for (let seatNum = 1; seatNum <= 32; seatNum++) {
-        seats.push({
-          busId: createdBus.id,
-          nomorKursi: String(seatNum),
-          harga: seatPrice,
-          isBooked: false,
-        })
-        seatCount++
+      // Buat Seats dengan layout berbeda untuk Sleeper vs reguler
+      const seats = []
+
+      if (busType.layout === 'double') {
+        // Sleeper Class: Layout bertingkat A1-A16 (lower), B1-B16 (upper)
+        for (let i = 1; i <= 16; i++) {
+          // Lower deck (A)
+          seats.push({
+            busId: createdBus.id,
+            nomorKursi: `A${i}`,
+            harga: baseSeatPrice,
+            isBooked: false,
+          })
+          // Upper deck (B)
+          seats.push({
+            busId: createdBus.id,
+            nomorKursi: `B${i}`,
+            harga: baseSeatPrice,
+            isBooked: false,
+          })
+          seatCount += 2
+        }
+      } else {
+        // Business & High Class: Layout biasa 1-32
+        for (let seatNum = 1; seatNum <= 32; seatNum++) {
+          seats.push({
+            busId: createdBus.id,
+            nomorKursi: String(seatNum),
+            harga: baseSeatPrice,
+            isBooked: false,
+          })
+          seatCount++
+        }
       }
 
       // Bulk insert seats
@@ -146,7 +179,7 @@ async function main() {
       })
     }
 
-    // Progress log setiap 20 buses
+    // Progress log setiap 30 buses
     if (busCount % 30 === 0) {
       console.log(`   Progress: ${busCount} buses created...`)
     }

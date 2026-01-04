@@ -7,6 +7,7 @@ type Props = {
   searchParams: Promise<{
     busId?: string
     seatId?: string
+    seatIds?: string
     harga?: string
     date?: string
   }>
@@ -21,13 +22,14 @@ export default async function BiodataPage({ searchParams }: Props) {
   const params = await searchParams
   const busId = params.busId || ''
   const seatId = params.seatId || ''
+  const seatIds = params.seatIds || seatId // Support both single and multiple seats
   const harga = params.harga || ''
   const date = params.date || ''
 
   return (
     <div className="min-h-screen bg-gray-50">
       <NavbarWithAuth />
-      <BiodataForm busId={busId} seatId={seatId} harga={harga} date={date} />
+      <BiodataForm busId={busId} seatIds={seatIds} harga={harga} date={date} />
     </div>
   )
 }

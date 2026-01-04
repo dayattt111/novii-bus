@@ -7,6 +7,7 @@ type Props = {
   searchParams: Promise<{
     busId?: string
     seatId?: string
+    seatIds?: string
     harga?: string
     date?: string
     namaPenumpang?: string
@@ -25,6 +26,7 @@ export default async function PaymentPage({ searchParams }: Props) {
   const params = await searchParams
   const busId = params.busId || ''
   const seatId = params.seatId || ''
+  const seatIds = params.seatIds || seatId // Support both single and multiple seats
   const harga = parseInt(params.harga || '0')
   const date = params.date || ''
   const namaPenumpang = params.namaPenumpang || ''
@@ -37,7 +39,7 @@ export default async function PaymentPage({ searchParams }: Props) {
       <NavbarWithAuth />
       <PaymentForm 
         busId={busId}
-        seatId={seatId}
+        seatIds={seatIds}
         harga={harga}
         date={date}
         namaPenumpang={namaPenumpang}

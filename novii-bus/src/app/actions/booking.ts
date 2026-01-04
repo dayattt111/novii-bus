@@ -12,7 +12,8 @@ export async function createBooking(formData: FormData) {
     redirect('/login')
   }
 
-  const seatId = formData.get('seatId') as string
+  const seatIdsStr = formData.get('seatIds') as string
+  const seatIds = seatIdsStr ? seatIdsStr.split(',') : []
   const busId = formData.get('busId') as string
   const namaPenumpang = formData.get('namaPenumpang') as string
   const noHp = formData.get('noHp') as string
@@ -23,6 +24,11 @@ export async function createBooking(formData: FormData) {
   const totalHarga = parseInt(formData.get('totalHarga') as string)
   const biayaLayanan = parseInt(formData.get('biayaLayanan') as string)
   const metodePembayaran = formData.get('metodePembayaran') as string
+
+  // Validasi
+  if (!seatIds || seatIds.length === 0) {
+    return { error: 'Tidak ada kursi yang dipilih' }
+  }
 
   // Validasi tanggal
   if (!tanggalKeberangkatanStr || tanggalKeberangkatanStr.trim() === '') {
@@ -62,13 +68,18 @@ export async function createBooking(formData: FormData) {
     return { error: `Tidak dapat membuat tanggal dari: ${tanggalKeberangkatanStr}` }
   }
 
-  // Cek seat masih available
-  const seat = await prisma.seat.findUnique({
-    where: { id: seatId },
+  // Cek semua seats masih available
+  const seats = await prisma.seat.findMany({
+    where: { id: { in: seatIds } },
   })
 
-  if (!seat || seat.isBooked) {
-    return { error: 'Kursi sudah dibooking' }
+  if (seats.length !== seatIds.length) {
+    return { error: 'Beberapa kursi tidak ditemukan' }
+  }
+
+  const bookedSeats = seats.filter(s => s.isBooked)
+  if (bookedSeats.length > 0) {
+    return { error: `Kursi ${bookedSeats.map(s => s.nomorKursi).join(', ')} sudah dibooking` }
   }
 
   // Generate QR Code
@@ -77,35 +88,42 @@ export async function createBooking(formData: FormData) {
     noHp,
     tanggal: tanggalKeberangkatanStr,
     waktu: waktuKeberangkatan,
+    kursi: seats.map(s => s.nomorKursi).join(', '),
   }
   const qrCode = await QRCode.toDataURL(JSON.stringify(bookingData))
 
-  // Buat booking
-  const booking = await prisma.booking.create({
-    data: {
-      userId: user.id,
-      busId,
-      seatId,
-      namaPenumpang,
-      noHp,
-      naikDi,
-      turunDi,
-      tanggalKeberangkatan,
-      waktuKeberangkatan,
-      totalHarga,
-      biayaLayanan,
-      metodePembayaran,
-      qrCode,
-    },
-  })
+  // Buat multiple bookings (satu per kursi)
+  const bookings = await Promise.all(
+    seatIds.map(async (seatId) => {
+      const seat = seats.find(s => s.id === seatId)!
+      return prisma.booking.create({
+        data: {
+          userId: user.id,
+          busId,
+          seatId,
+          namaPenumpang,
+          noHp,
+          naikDi,
+          turunDi,
+          tanggalKeberangkatan,
+          waktuKeberangkatan,
+          totalHarga: seat.harga + biayaLayanan,
+          biayaLayanan,
+          metodePembayaran,
+          qrCode,
+        },
+      })
+    })
+  )
 
-  // Update seat status
-  await prisma.seat.update({
-    where: { id: seatId },
+  // Update semua seat status
+  await prisma.seat.updateMany({
+    where: { id: { in: seatIds } },
     data: { isBooked: true },
   })
 
-  redirect(`/booking/${booking.id}/payment`)
+  // Redirect ke payment dengan booking pertama
+  redirect(`/booking/${bookings[0].id}/payment`)
 }
 
 export async function updatePaymentStatus(bookingId: string) {

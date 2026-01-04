@@ -6,7 +6,7 @@ import { useActionState, useState } from 'react'
 
 type Props = {
   busId: string
-  seatId: string
+  seatIds: string
   harga: number
   date: string
   namaPenumpang: string
@@ -17,7 +17,7 @@ type Props = {
 
 export default function PaymentForm({ 
   busId, 
-  seatId, 
+  seatIds, 
   harga, 
   date, 
   namaPenumpang, 
@@ -25,6 +25,7 @@ export default function PaymentForm({
   naikDi, 
   turunDi 
 }: Props) {
+  const seatCount = seatIds ? seatIds.split(',').length : 0
   // Konversi date ke format DD-MM-YYYY
   let validDate = ''
   if (date) {
@@ -137,7 +138,7 @@ export default function PaymentForm({
             <form action={formAction} className="space-y-4">
               {/* Hidden inputs untuk data booking */}
               <input type="hidden" name="busId" value={busId} />
-              <input type="hidden" name="seatId" value={seatId} />
+              <input type="hidden" name="seatIds" value={seatIds} />
               <input type="hidden" name="totalHarga" value={totalHarga} />
               <input type="hidden" name="biayaLayanan" value={biayaLayanan} />
               <input type="hidden" name="tanggalKeberangkatan" value={validDate} />
@@ -262,7 +263,7 @@ export default function PaymentForm({
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Harga Tiket</span>
+                <span className="text-gray-600">Harga Tiket ({seatCount} kursi)</span>
                 <span className="font-medium">Rp {harga.toLocaleString('id-ID')}</span>
               </div>
               <div className="flex justify-between text-sm">
