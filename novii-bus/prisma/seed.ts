@@ -21,7 +21,8 @@ async function main() {
   const cities = [
     'Makassar', 'Manado', 'Palu', 'Kendari', 'Gorontalo',
     'Palopo', 'Toraja', 'Mamuju', 'Bau-Bau', 'Bitung',
-    'Pare-Pare', 'Watampone', 'Bulukumba', 'Kolaka', 'Rantepao'
+    'Pare-Pare', 'Watampone', 'Bulukumba', 'Kolaka', 'Rantepao',
+    'Sorowako'
   ]
 
   // Generate rute populer (tidak semua kombinasi)
@@ -48,7 +49,7 @@ async function main() {
   }
 
   // Tambah rute antar kota besar
-  const majorCities = ['Manado', 'Palu', 'Kendari', 'Gorontalo', 'Palopo']
+  const majorCities = ['Manado', 'Palu', 'Kendari', 'Gorontalo', 'Palopo', 'Sorowako']
   for (let i = 0; i < majorCities.length; i++) {
     for (let j = i + 1; j < majorCities.length; j++) {
       const distance = Math.abs(i - j)

@@ -109,6 +109,30 @@ export default function BusSelectionForm({ from, to, date }: Props) {
     return false // Nanti bisa ditambahkan logic untuk cek isBooked
   }
 
+  // Fungsi untuk calculate arrival time berdasarkan departure + duration
+  const calculateArrivalTime = (departureTime: string, durationStr: string) => {
+    // Parse departure time (format: HH:MM WITA)
+    const [hours, minutes] = departureTime.replace(' WITA', '').split(':').map(Number)
+    
+    // Parse duration (format: "X jam")
+    const durationHours = parseInt(durationStr.split(' ')[0])
+    
+    // Calculate arrival
+    let arrivalHours = hours + durationHours
+    const arrivalMinutes = minutes
+    
+    // Handle day overflow
+    const nextDay = arrivalHours >= 24
+    if (nextDay) {
+      arrivalHours = arrivalHours - 24
+    }
+    
+    return {
+      time: `${String(arrivalHours).padStart(2, '0')}:${String(arrivalMinutes).padStart(2, '0')} WITA`,
+      nextDay
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-white">
@@ -259,11 +283,31 @@ export default function BusSelectionForm({ from, to, date }: Props) {
 
                   {/* Time and Price */}
                   <div className="flex items-center justify-between mb-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center gap-2 text-sm text-gray-700">
-                      <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="font-bold">{busConfig.time}</span>
+                    <div className="flex-1">
+                      {selectedRoute && routes.length > 0 && (
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm">
+                            <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="font-bold text-gray-900">{busConfig.time}</span>
+                          </div>
+                          {(() => {
+                            const currentRoute = routes.find(r => r.id === selectedRoute)
+                            if (currentRoute?.durasi) {
+                              const arrival = calculateArrivalTime(busConfig.time, currentRoute.durasi)
+                              return (
+                                <div className="flex items-center gap-1 text-xs text-gray-600">
+                                  <span>→ ({currentRoute.durasi})</span>
+                                  <span className="font-semibold text-green-600">{arrival.time}</span>
+                                  {arrival.nextDay && <span className="text-red-500 text-xs">+1</span>}
+                                </div>
+                              )
+                            }
+                            return null
+                          })()}
+                        </div>
+                      )}
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-gray-500 mb-1">Mulai dari</p>
