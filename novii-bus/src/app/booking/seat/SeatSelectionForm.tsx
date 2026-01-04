@@ -150,43 +150,39 @@ export default function SeatSelectionForm({ busId, date }: Props) {
 
             <div className="bg-gray-50 rounded-2xl p-6 border-2 border-gray-300">
               {isSleeperBus ? (
-                // Sleeper Bus Double Decker Layout
-                <div className="space-y-8">
+                // Sleeper Bus Double Decker Layout - Side by Side
+                <div className="grid grid-cols-2 gap-4">
                   {/* Lower Deck */}
-                  <div>
-                    <div className="bg-blue-100 border-2 border-blue-300 rounded-lg p-4 mb-4">
-                      <h4 className="text-sm font-bold text-blue-900 mb-3 text-center">🔽 DECK BAWAH (A)</h4>
-                      <div className="space-y-3">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(row => (
-                          <div key={`a-row-${row}`} className="flex justify-between gap-4">
-                            <div className="flex gap-2">
-                              {renderSeat(`A${row * 2 - 1}`, 'left')}
-                            </div>
-                            <div className="flex gap-2">
-                              {renderSeat(`A${row * 2}`, 'right')}
-                            </div>
+                  <div className="bg-blue-100 border-2 border-blue-300 rounded-lg p-4">
+                    <h4 className="text-sm font-bold text-blue-900 mb-3 text-center">🔽 DECK BAWAH (A)</h4>
+                    <div className="space-y-2">
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map(row => (
+                        <div key={`a-row-${row}`} className="flex justify-between gap-2">
+                          <div className="flex gap-1">
+                            {renderSeat(`A${row * 2 - 1}`, 'left')}
                           </div>
-                        ))}
-                      </div>
+                          <div className="flex gap-1">
+                            {renderSeat(`A${row * 2}`, 'right')}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
                   {/* Upper Deck */}
-                  <div>
-                    <div className="bg-purple-100 border-2 border-purple-300 rounded-lg p-4">
-                      <h4 className="text-sm font-bold text-purple-900 mb-3 text-center">🔼 DECK ATAS (B)</h4>
-                      <div className="space-y-3">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(row => (
-                          <div key={`b-row-${row}`} className="flex justify-between gap-4">
-                            <div className="flex gap-2">
-                              {renderSeat(`B${row * 2 - 1}`, 'left')}
-                            </div>
-                            <div className="flex gap-2">
-                              {renderSeat(`B${row * 2}`, 'right')}
-                            </div>
+                  <div className="bg-purple-100 border-2 border-purple-300 rounded-lg p-4">
+                    <h4 className="text-sm font-bold text-purple-900 mb-3 text-center">🔼 DECK ATAS (B)</h4>
+                    <div className="space-y-2">
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map(row => (
+                        <div key={`b-row-${row}`} className="flex justify-between gap-2">
+                          <div className="flex gap-1">
+                            {renderSeat(`B${row * 2 - 1}`, 'left')}
                           </div>
-                        ))}
-                      </div>
+                          <div className="flex gap-1">
+                            {renderSeat(`B${row * 2}`, 'right')}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
