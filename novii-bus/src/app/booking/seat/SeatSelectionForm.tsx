@@ -128,7 +128,7 @@ export default function SeatSelectionForm({ busId, date }: Props) {
                 <div className="text-left">
                   <p className="text-xs font-bold text-gray-500 mb-1">PINTU</p>
                   <div className="flex gap-2">
-                    <div className="w-10 h-6 bg-gray-400 rounded flex items-center justify-center text-white text-xs font-bold">B</div>
+                    {/* <div className="w-10 h-6 bg-gray-400 rounded flex items-center justify-center text-white text-xs font-bold">B</div> */}
                     <div className="w-10 h-6 bg-gray-400 rounded flex items-center justify-center text-white text-xs font-bold">A</div>
                   </div>
                 </div>
